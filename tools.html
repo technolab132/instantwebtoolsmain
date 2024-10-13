@@ -1,0 +1,367 @@
+<!DOCTYPE html><html lang="en"><head><meta http-equiv="Content-Security-Policy" content="default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://cdnjs.cloudflare.com https://cdn.jsdelivr.net https://code.jquery.com https://unpkg.com https://d3js.org https://threejs.org https://cdn.plot.ly https://stackpath.bootstrapcdn.com https://maps.googleapis.com https://cdn.tailwindcss.com https://ajax.googleapis.com https://kit.fontawesome.com https://cdn.datatables.net https://maxcdn.bootstrapcdn.com https://code.highcharts.com https://tako-static-assets-production.s3.amazonaws.com https://www.youtube.com https://fonts.googleapis.com https://fonts.gstatic.com https://pfst.cf2.poecdn.net https://i.imgur.com https://wikimedia.org https://*.icons8.com https://*.giphy.com https://picsum.photos https://images.unsplash.com; frame-src 'self' https://www.youtube.com https://trytako.com; child-src 'self'; manifest-src 'self'; worker-src 'self'; upgrade-insecure-requests; block-all-mixed-content;">
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Justice Minds Advocacy On Demand TOOLS</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&amp;display=swap" rel="stylesheet">
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            font-family: 'Orbitron', sans-serif;
+            background-color: #000;
+            color: #fff;
+            overflow: hidden;
+        }
+        
+        .container {
+            width: 100vw;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+            align-items: center;
+            perspective: 1000px;
+            padding: 40px;
+            box-sizing: border-box;
+            background: linear-gradient(135deg, #1a1a1a 0%, #0a0a0a 100%);
+        }
+        
+        .cube {
+            width: 300px;
+            height: 300px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: rotate 20s infinite linear;
+            margin: 50px 0;
+        }
+        
+        .face {
+            position: absolute;
+            width: 300px;
+            height: 300px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 24px;
+            backdrop-filter: blur(10px);
+            transition: all 0.5s;
+            box-shadow: 0 0 30px rgba(255,255,255,0.2);
+            color: #fff;
+            text-shadow: 0 0 10px rgba(255,255,255,0.5);
+        }
+        
+        .front { transform: translateZ(150px); }
+        .back { transform: rotateY(180deg) translateZ(150px); }
+        .right { transform: rotateY(90deg) translateZ(150px); }
+        .left { transform: rotateY(-90deg) translateZ(150px); }
+        .top { transform: rotateX(90deg) translateZ(150px); }
+        .bottom { transform: rotateX(-90deg) translateZ(150px); }
+        
+        @keyframes rotate {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+        
+        .product-name {
+            font-size: 48px;
+            font-weight: 700;
+            text-shadow: 0 0 20px rgba(255,255,255,0.3);
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+        }
+        
+        .button-container {
+            display: flex;
+            justify-content: space-around;
+            width: 100%;
+            margin-top: 50px;
+        }
+        
+        .nav-button {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            perspective: 1000px;
+        }
+        
+        .nav-button span {
+            margin-bottom: 15px;
+            font-size: 18px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            opacity: 0.8;
+        }
+        
+        .nav-button .mini-cube {
+            width: 100px;
+            height: 100px;
+            position: relative;
+            transform-style: preserve-3d;
+            animation: buttonRotate 15s infinite linear;
+            cursor: pointer;
+        }
+        
+        .mini-cube .face {
+            position: absolute;
+            width: 100px;
+            height: 100px;
+            border: 1px solid rgba(255,255,255,0.3);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 14px;
+            opacity: 0.9;
+            transition: all 0.3s;
+            background: rgba(255,255,255,0.1);
+            backdrop-filter: blur(5px);
+        }
+        
+        .mini-cube:hover .face {
+            opacity: 1;
+            box-shadow: 0 0 30px rgba(255,255,255,0.4);
+        }
+        
+        .mini-cube .front { transform: translateZ(50px); }
+        .mini-cube .back { transform: rotateY(180deg) translateZ(50px); }
+        .mini-cube .right { transform: rotateY(90deg) translateZ(50px); }
+        .mini-cube .left { transform: rotateY(-90deg) translateZ(50px); }
+        .mini-cube .top { transform: rotateX(90deg) translateZ(50px); }
+        .mini-cube .bottom { transform: rotateX(-90deg) translateZ(50px); }
+        
+        @keyframes buttonRotate {
+            0% { transform: rotateX(0deg) rotateY(0deg); }
+            100% { transform: rotateX(360deg) rotateY(360deg); }
+        }
+        
+        .particles {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            top: 0;
+            left: 0;
+            z-index: -1;
+        }
+        
+        #manifest-button {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            padding: 10px 20px;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            color: #fff;
+            font-family: 'Orbitron', sans-serif;
+            font-size: 16px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        #manifest-button:hover {
+            background: rgba(255,255,255,0.2);
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+        
+        #manifest-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.8);
+            z-index: 1000;
+        }
+        
+        #manifest-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 80%;
+            height: 80%;
+            background: rgba(255,255,255,0.1);
+            border: 1px solid rgba(255,255,255,0.3);
+            padding: 20px;
+            box-sizing: border-box;
+            overflow: auto;
+        }
+        
+        .manifest-item {
+            display: inline-block;
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid rgba(255,255,255,0.3);
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+        
+        .manifest-item:hover {
+            background: rgba(255,255,255,0.2);
+            box-shadow: 0 0 20px rgba(255,255,255,0.3);
+        }
+        
+        .manifest-outline {
+            position: absolute;
+            opacity: 0.3;
+            pointer-events: none;
+        }
+        
+        .manifest-focus {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.5s;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="particles" id="particles"></div>
+        <h1 class="product-name">Justice Minds Advocacy On Demand</h1>
+        <div class="cube">
+            <div class="face front">Justice Prevails</div>
+            <div class="face back">Advocate for Change</div>
+            <div class="face right">You Have the Power</div>
+            <div class="face left">Make a Difference</div>
+            <div class="face top">Stand for Truth</div>
+            <div class="face bottom">Be the Voice</div>
+        </div>
+        <div class="button-container">
+            <div class="nav-button">
+                <span>About</span>
+                <div class="mini-cube" onclick="navigate('about')">
+                    <div class="face front">Learn</div>
+                    <div class="face back">More</div>
+                    <div class="face right">About</div>
+                    <div class="face left">Us</div>
+                    <div class="face top">Our</div>
+                    <div class="face bottom">Story</div>
+                </div>
+            </div>
+            <div class="nav-button">
+                <span>Services</span>
+                <div class="mini-cube" onclick="navigate('services')">
+                    <div class="face front">Our</div>
+                    <div class="face back">Services</div>
+                    <div class="face right">What We</div>
+                    <div class="face left">Offer</div>
+                    <div class="face top">How We</div>
+                    <div class="face bottom">Help</div>
+                </div>
+            </div>
+            <div class="nav-button">
+                <span>Contact</span>
+                <div class="mini-cube" onclick="navigate('contact')">
+                    <div class="face front">Get In</div>
+                    <div class="face back">Touch</div>
+                    <div class="face right">Reach</div>
+                    <div class="face left">Out</div>
+                    <div class="face top">Contact</div>
+                    <div class="face bottom">Us</div>
+                </div>
+            </div>
+            <div class="nav-button">
+                <span>Resources</span>
+                <div class="mini-cube" onclick="navigate('resources')">
+                    <div class="face front">Find</div>
+                    <div class="face back">Resources</div>
+                    <div class="face right">Helpful</div>
+                    <div class="face left">Info</div>
+                    <div class="face top">Learn</div>
+                    <div class="face bottom">More</div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <button id="manifest-button">Manifest</button>
+    
+    <div id="manifest-overlay">
+        <div id="manifest-content">
+            <div class="manifest-item" data-shape="heart">Heart</div>
+            <div class="manifest-item" data-shape="star">Star</div>
+            <div class="manifest-item" data-shape="diamond">Diamond</div>
+            <div class="manifest-item" data-shape="circle">Circle</div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/particles.js/2.0.0/particles.min.js"></script>
+    <script>
+        particlesJS("particles", {
+            particles: {
+                number: { value: 100, density: { enable: true, value_area: 800 } },
+                color: { value: ["#ff00ff", "#00ffff", "#ffff00", "#ff0000", "#00ff00", "#0000ff"] },
+                shape: { type: "circle" },
+                opacity: { value: 0.5, random: true },
+                size: { value: 3, random: true },
+                move: { enable: true, speed: 2, direction: "none", random: true, out_mode: "out" }
+            }
+        });
+
+        function navigate(page) {
+            alert(`Navigating to ${page} page`);
+            // Implement actual navigation logic here
+        }
+        
+        const manifestButton = document.getElementById('manifest-button');
+        const manifestOverlay = document.getElementById('manifest-overlay');
+        const manifestContent = document.getElementById('manifest-content');
+        
+        manifestButton.addEventListener('click', () => {
+            manifestOverlay.style.display = 'block';
+        });
+        
+        manifestOverlay.addEventListener('click', (e) => {
+            if (e.target === manifestOverlay) {
+                manifestOverlay.style.display = 'none';
+            }
+        });
+        
+        manifestContent.addEventListener('click', (e) => {
+            if (e.target.classList.contains('manifest-item')) {
+                const shape = e.target.dataset.shape;
+                showManifestOutline(shape);
+            }
+        });
+        
+        function showManifestOutline(shape) {
+            const outline = document.createElement('div');
+            outline.classList.add('manifest-outline');
+            outline.style.width = '200px';
+            outline.style.height = '200px';
+            outline.style.border = '2px dashed #fff';
+            outline.style.position = 'absolute';
+            outline.style.top = '50%';
+            outline.style.left = '50%';
+            outline.style.transform = 'translate(-50%, -50%)';
+            
+            const focus = document.createElement('div');
+            focus.classList.add('manifest-focus');
+            focus.style.width = '220px';
+            focus.style.height = '220px';
+            focus.style.position = 'absolute';
+            focus.style.top = '50%';
+            focus.style.left = '50%';
+            focus.style.transform = 'translate(-50%, -50%)';
+            focus.style.background = `url('${shape}.png') no-repeat center center`;
+            focus.style.backgroundSize = 'contain';
+            
+            document.body.appendChild(outline);
+            document.body.appendChild(focus);
+            
+            outline.addEventListener('mouseover', () => {
+                focus.style.opacity = '1';
+            });
+            
+            outline.addEventListener('mouseout', () => {
+                focus.style.opacity = '0';
+            });
+            
+            manifestOverlay.style.display = 'none';
+        }
+    </script>
+
+
+</body></html>

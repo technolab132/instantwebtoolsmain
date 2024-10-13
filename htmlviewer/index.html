@@ -1,0 +1,235 @@
+MAK-MAKIN ~ LIFE EASIER ~ Text mess ~ into Bless ~ Namaste ~
+
+<!DOCTYPE html>
+<html>
+<head>
+<base href="https://instantwebbuilder.vercel.app/">
+<style>
+  :root {
+    --bg-color: #f0f0f0;
+    --text-color: #333;
+    --header-bg: #4CAF50;
+    --header-text: white;
+    --sidebar-bg: #ddd;
+    --preview-bg: white;
+    --button-bg: #4CAF50;
+    --button-text: white;
+  }
+
+  .dark-mode {
+    --bg-color: #222;
+    --text-color: #f0f0f0;
+    --header-bg: #1a1a1a;
+    --header-text: #f0f0f0;
+    --sidebar-bg: #333;
+    --preview-bg: #444;
+    --button-bg: #555;
+    --button-text: #f0f0f0;
+  }
+
+  body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    background-color: var(--bg-color);
+    color: var(--text-color);
+    transition: all 0.3s ease;
+  }
+
+  #header {
+    background-color: var(--header-bg);
+    color: var(--header-text);
+    padding: 10px;
+    text-align: center;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+
+  #content {
+    display: flex;
+    flex-grow: 1;
+  }
+
+  #file-list-container {
+    width: 250px;
+    padding: 10px;
+    background-color: var(--sidebar-bg);
+    overflow-y: auto;
+  }
+
+  #preview-container {
+    flex-grow: 1;
+    display: flex;
+    flex-direction: column;
+    padding: 10px;
+  }
+
+  #preview {
+    flex-grow: 1;
+    border: none;
+    background-color: var(--preview-bg);
+  }
+
+  #drive-link-container {
+    margin-top: 10px;
+    display: flex;
+    flex-direction: column;
+  }
+
+  #drive-link-input {
+    margin-bottom: 5px;
+    padding: 5px;
+  }
+
+  #embed-code {
+    width: 100%;
+    height: 100px;
+    margin-top: 10px;
+    resize: vertical;
+    background-color: var(--sidebar-bg);
+    color: var(--text-color);
+    border: 1px solid var(--text-color);
+    padding: 5px;
+  }
+
+  .file-item {
+    margin-bottom: 10px;
+    padding: 5px;
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  .file-item:hover {
+    opacity: 0.8;
+  }
+
+  button {
+    background-color: var(--button-bg);
+    color: var(--button-text);
+    border: none;
+    padding: 5px 10px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+
+  button:hover {
+    opacity: 0.8;
+  }
+
+  #embed-code-container {
+    margin-top: 10px;
+  }
+</style>
+</head>
+<body>
+<div id="header">
+  <h1>HTML Viewer and Embedder</h1>
+  <button id="dark-mode-toggle">Toggle Dark Mode</button>
+</div>
+<div id="content">
+  <div id="file-list-container">
+    <input type="file" id="file-input" accept=".html,.htm" multiple>
+    <p>Upload your HTML files here</p>
+    <div id="file-list"></div>
+    <div id="drive-link-container">
+      <input type="text" id="drive-link-input" placeholder="Enter Google Drive link">
+      <button id="insert-drive-link">Insert Drive Link</button>
+    </div>
+  </div>
+  <div id="preview-container">
+    <iframe id="preview" src="about:blank"></iframe>
+    <div id="embed-code-container">
+      <button id="toggle-embed-code">Toggle Embed Code</button>
+      <textarea id="embed-code" readonly placeholder="Embed code will appear here" style="display: none;"></textarea>
+    </div>
+  </div>
+</div>
+
+<script>
+const fileInput = document.getElementById('file-input');
+const preview = document.getElementById('preview');
+const embedCode = document.getElementById('embed-code');
+const fileList = document.getElementById('file-list');
+const darkModeToggle = document.getElementById('dark-mode-toggle');
+const toggleEmbedCode = document.getElementById('toggle-embed-code');
+
+let uploadedFiles = [];
+
+fileInput.addEventListener('change', function(e) {
+  const files = e.target.files;
+  for (let i = 0; i < files.length; i++) {
+    const file = files[i];
+    const reader = new FileReader();
+    reader.onload = function(e) {
+      uploadedFiles.push({
+        name: file.name,
+        contents: e.target.result
+      });
+      updateFileList();
+    };
+    reader.readAsText(file);
+  }
+});
+
+function updateFileList() {
+  fileList.innerHTML = '';
+  uploadedFiles.forEach((file, index) => {
+    const fileItem = document.createElement('div');
+    fileItem.className = 'file-item';
+    fileItem.textContent = file.name;
+    fileItem.addEventListener('click', () => loadFile(index));
+    fileList.appendChild(fileItem);
+  });
+}
+
+function loadFile(index) {
+  const file = uploadedFiles[index];
+  preview.srcdoc = file.contents;
+  updateEmbedCode(file.contents);
+}
+
+function updateEmbedCode(html) {
+  const escapedHtml = html.replace(/&/g, '&amp;')
+                          .replace(/</g, '&lt;')
+                          .replace(/>/g, '&gt;')
+                          .replace(/"/g, '&quot;')
+                          .replace(/'/g, '&#039;');
+  const embedHtml = `<iframe src="data:text/html;charset=utf-8,${encodeURIComponent(html)}" style="width:100%; height:500px; border:0;"></iframe>`;
+  embedCode.value = embedHtml;
+}
+
+function insertDriveLink() {
+  const driveLink = document.getElementById('drive-link-input').value;
+  if (driveLink) {
+    const iframe = `<iframe src="${driveLink}" style="width:100%; height:500px; border:0;"></iframe>`;
+    preview.srcdoc += iframe;
+    updateEmbedCode(preview.srcdoc);
+  } else {
+    alert('Please enter a valid Google Drive link');
+  }
+}
+
+document.getElementById('insert-drive-link').addEventListener('click', insertDriveLink);
+
+embedCode.addEventListener('click', function() {
+  this.select();
+  document.execCommand('copy');
+  alert('Embed code copied to clipboard!');
+});
+
+darkModeToggle.addEventListener('click', function() {
+  document.body.classList.toggle('dark-mode');
+});
+
+toggleEmbedCode.addEventListener('click', function() {
+  embedCode.style.display = embedCode.style.display === 'none' ? 'block' : 'none';
+});
+</script>
+</body>
+</html>

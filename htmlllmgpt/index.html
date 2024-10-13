@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>HTML Editor and LLM/GPT Integration Tool</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+        }
+        #editor {
+            width: 100%;
+            height: 300px;
+        }
+        #container {
+            padding: 20px;
+        }
+        button {
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div id="container">
+        <h1>HTML Editor and LLM/GPT Integration Tool</h1>
+        <textarea id="editor"></textarea>
+        <br>
+        <button onclick="saveAsHTML()">Save as HTML File</button>
+        <button onclick="renderHTML()">Render HTML</button>
+    </div>
+
+    <script>
+        function saveAsHTML() {
+            const content = document.getElementById('editor').value;
+            const blob = new Blob([content], {type: 'text/html'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = 'generated_page.html';
+            a.click();
+        }
+
+        function renderHTML() {
+            const content = document.getElementById('editor').value;
+            document.body.innerHTML = content;
+        }
+    </script>
+</body>
+</html>

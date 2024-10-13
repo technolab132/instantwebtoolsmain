@@ -1,0 +1,211 @@
+<html><head><base href="http://yourwebsite.com/">
+    <title>Justice Minds Educational Means Test - Typing Speed Test</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Oxygen, Ubuntu, Cantarell, "Open Sans", "Helvetica Neue", sans-serif;
+            margin: 0;
+            background-color: #121212;
+            color: #FFFFFF;
+        }
+        header, footer {
+            background-color: #1C1C1E;
+            text-align: center;
+            padding: 20px;
+        }
+        h1, h2 {
+            font-weight: 600;
+            color: #FFFFFF;
+        }
+        nav {
+            background-color: #1C1C1E;
+            display: flex;
+            justify-content: center;
+            padding: 10px;
+            border-bottom: 1px solid #3A3A3C;
+        }
+        nav a {
+            color: #FFFFFF;
+            text-decoration: none;
+            margin: 0 15px;
+            font-weight: 500;
+            padding: 5px 10px;
+            border-radius: 5px;
+        }
+        nav a.active, nav a:hover {
+            background-color: #0A84FF;
+            color: #FFFFFF;
+        }
+        .container {
+            max-width: 600px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+        .test-section {
+            background-color: #1C1C1E;
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid #3A3A3C;
+        }
+        .test-heading {
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        #origin-text {
+            background-color: #2C2C2E;
+            border: 1px solid #3A3A3C;
+            padding: 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            color: #FFFFFF;
+        }
+        #test-area {
+            width: 100%;
+            padding: 15px;
+            font-size: 16px;
+            background-color: #2C2C2E;
+            border: 1px solid #3A3A3C;
+            border-radius: 10px;
+            color: #FFFFFF;
+            resize: none;
+            height: 150px;
+        }
+        .buttons {
+            text-align: center;
+            margin-top: 20px;
+        }
+        .buttons button {
+            background-color: #0A84FF;
+            color: #FFFFFF;
+            border: none;
+            padding: 10px 20px;
+            margin: 0 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .buttons button:hover {
+            background-color: #0A84FF;
+            opacity: 0.9;
+        }
+        #clock {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 18px;
+            color: #FFFFFF;
+        }
+        #result {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 20px;
+            color: #0A84FF;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Justice Minds Educational Means Test</h1>
+    </header>
+    <nav>
+        <a href="typing-speed-test.html" class="active">Typing Speed Test</a>
+        <a href="comprehension-test.html">Comprehension Test</a>
+        <a href="coordination-test.html">Coordination Test</a>
+    </nav>
+    <div class="container">
+        <div class="test-section">
+            <div class="test-heading">
+                <h2>Typing Speed Test</h2>
+                <p class="test-description">
+                    Evaluate your typing speed and accuracy compared to industry standards and what is expected from an MA student.
+                </p>
+            </div>
+            <div id="origin-text" class="origin-text">
+                <p id="origin-text-content">The quick brown fox jumps over the lazy dog.</p>
+            </div>
+            <textarea id="test-area" placeholder="Start typing here..."></textarea>
+            <div class="buttons">
+                <button id="start">Start Test</button>
+                <button id="reset">Reset</button>
+            </div>
+            <div id="clock">Time: <span id="timer">00:00:00</span></div>
+            <div id="result"></div>
+        </div>
+    </div>
+    <footer>
+        © 2023 Government Assessment Services
+    </footer>
+    <script>
+        const testWrapper = document.getElementById('test-area');
+        const originText = document.getElementById('origin-text-content').innerText;
+        const timer = document.getElementById('timer');
+        const resultDisplay = document.getElementById('result');
+        const startButton = document.getElementById('start');
+        const resetButton = document.getElementById('reset');
+        let interval;
+        let timerRunning = false;
+        let time = [0, 0, 0, 0];
+
+        function leadingZero(time) {
+            if (time <= 9) {
+                time = "0" + time;
+            }
+            return time;
+        }
+
+        function runTimer() {
+            let currentTime = leadingZero(time[0]) + ":" + leadingZero(time[1]) + ":" + leadingZero(time[2]);
+            timer.innerText = currentTime;
+            time[3]++;
+            time[0] = Math.floor((time[3]/100)/60);
+            time[1] = Math.floor((time[3]/100) - (time[0] * 60));
+            time[2] = Math.floor(time[3] - (time[1] * 100) - (time[0] * 6000));
+        }
+
+        function spellCheck() {
+            let textEntered = testWrapper.value;
+            let originTextMatch = originText.substring(0, textEntered.length);
+
+            if (textEntered == originText) {
+                clearInterval(interval);
+                testWrapper.style.borderColor = '#0A84FF';
+                let minutes = (time[0] * 60) + time[1] + (time[2]/100);
+                let wordsTyped = originText.split(' ').length;
+                let wpm = Math.round((wordsTyped / minutes) * 60);
+                resultDisplay.innerText = "Your typing speed is " + wpm + " words per minute.";
+            } else {
+                if (textEntered == originTextMatch) {
+                    testWrapper.style.borderColor = '#0A84FF';
+                } else {
+                    testWrapper.style.borderColor = '#FF453A';
+                }
+            }
+        }
+
+        function start() {
+            if (!timerRunning) {
+                timerRunning = true;
+                interval = setInterval(runTimer, 10);
+            }
+        }
+
+        function reset() {
+            clearInterval(interval);
+            interval = null;
+            time = [0, 0, 0, 0];
+            timerRunning = false;
+
+            testWrapper.value = "";
+            timer.innerText = "00:00:00";
+            testWrapper.style.borderColor = "#3A3A3C";
+            resultDisplay.innerText = "";
+        }
+
+        testWrapper.addEventListener("input", spellCheck, false);
+        startButton.addEventListener("click", function() {
+            reset();
+            start();
+            testWrapper.focus();
+        }, false);
+        resetButton.addEventListener("click", reset, false);
+    </script>
+
+</body></html>

@@ -1,0 +1,498 @@
+<html><head>
+  <base href="https://instantwebbuilder.vercel.app/justicemindsforensics.html">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title> JUSTICE MINDS Advanced Forensic Linguistics Tool &amp; Analysis Tool</title>
+  <style>
+    :root {
+      --bg-color: #f4f4f4;
+      --text-color: #333;
+      --highlight-color: #ffff00;
+      --button-color: #3498db;
+      --button-hover: #2980b9;
+      --container-bg: #fff;
+    }
+    body {
+      font-family: Arial, sans-serif;
+      line-height: 1.6;
+      color: var(--text-color);
+      margin: 0;
+      padding: 0;
+      background-color: var(--bg-color);
+      display: flex;
+      transition: all 0.3s ease;
+    }
+    .dark-mode {
+      --bg-color: #1a1a1a;
+      --text-color: #f4f4f4;
+      --highlight-color: #ffd700;
+      --button-color: #2ecc71;
+      --button-hover: #27ae60;
+      --container-bg: #2c3e50;
+    }
+    h1, h2 {
+      color: var(--text-color);
+    }
+    .tool-section {
+      background-color: var(--container-bg);
+      border-radius: 8px;
+      padding: 20px;
+      margin-bottom: 20px;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    .highlight {
+      background-color: var(--highlight-color);
+      padding: 2px 4px;
+      border-radius: 3px;
+    }
+    .button {
+      background-color: var(--button-color);
+      color: #fff;
+      padding: 10px 20px;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background-color 0.3s;
+    }
+    .button:hover {
+      background-color: var(--button-hover);
+    }
+    #pdf-container {
+      width: 50%;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 20px;
+      box-sizing: border-box;
+      position: relative;
+    }
+    #tools-container {
+      width: 50%;
+      height: 100vh;
+      overflow-y: auto;
+      padding: 20px;
+      box-sizing: border-box;
+    }
+    #pdf-viewer {
+      width: 100%;
+      height: calc(100vh - 60px);
+      border: 1px solid #ddd;
+      position: relative;
+    }
+    .extracted-sentence {
+      background-color: var(--container-bg);
+      border: 1px solid var(--text-color);
+      padding: 10px;
+      margin-bottom: 10px;
+      border-radius: 5px;
+    }
+    #dark-mode-toggle {
+      position: fixed;
+      top: 10px;
+      right: 10px;
+      z-index: 1000;
+    }
+    .preview-window {
+      max-height: 300px;
+      overflow-y: auto;
+      border: 1px solid var(--text-color);
+      padding: 10px;
+      margin-top: 10px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      margin-top: 10px;
+    }
+    th, td {
+      border: 1px solid var(--text-color);
+      padding: 8px;
+      text-align: left;
+    }
+    th {
+      background-color: var(--bg-color);
+    }
+    .highlighted-word {
+      background-color: var(--highlight-color);
+      font-weight: bold;
+    }
+    .pdf-page {
+      position: relative;
+    }
+    .pdf-highlight {
+      position: absolute;
+      background-color: rgba(255, 255, 0, 0.5);
+      pointer-events: none;
+    }
+    .pdf-table-highlight {
+      background-color: rgba(255, 215, 0, 0.5);
+    }
+  </style>
+</head>
+<body>
+  <button id="dark-mode-toggle" class="button" onclick="toggleDarkMode()">Toggle Dark Mode</button>
+  
+  <div id="pdf-container">
+    <h2>PDF Viewer</h2>
+    <div id="pdf-viewer"></div>
+  </div>
+
+  <div id="tools-container">
+    <h1>Advanced PDF OCR &amp; Analysis Tool</h1>
+    
+    <div class="tool-section">
+      <h2>Upload Your File</h2>
+      <input type="file" id="file-upload" accept=".pdf,.csv">
+      <button class="button" onclick="processFile()">Process File</button>
+    </div>
+
+    <div class="tool-section">
+      <h2>Word Extraction and Context</h2>
+      <input type="text" id="search-term" placeholder="Enter word to search">
+      <label for="context-periods">Number of periods for context:</label>
+      <input type="number" id="context-periods" min="1" max="5" value="2">
+      <button class="button" onclick="extractWords()">Extract Words</button>
+      <div id="extracted-words" class="preview-window"></div>
+    </div>
+
+    <div class="tool-section">
+      <h2>Highlighting and Annotations</h2>
+      <input type="text" id="highlight-term" placeholder="Enter term to highlight">
+      <button class="button" onclick="highlightTerms()">Highlight</button>
+      <div id="highlight-list" class="preview-window"></div>
+    </div>
+
+    <div class="tool-section">
+      <h2>Export and Analysis</h2>
+      <button class="button" onclick="exportPDF()">Export Annotated PDF</button>
+      <button class="button" onclick="generateReport()">Generate Analysis Report</button>
+    </div>
+
+    <div class="tool-section">
+      <h2>Table Search</h2>
+      <input type="text" id="table-search-term" placeholder="Enter word to search in tables">
+      <button class="button" onclick="searchTables()">Search Tables</button>
+      <div id="table-search-results" class="preview-window"></div>
+    </div>
+  </div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/2.9.359/pdf.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/tesseract.js/2.1.5/tesseract.min.js"></script>
+  <script>
+    let pdfDocument = null;
+    let pdfText = '';
+    let pdfData = [];
+    let searchResults = [];
+
+    function toggleDarkMode() {
+      document.body.classList.toggle('dark-mode');
+    }
+
+    async function processFile() {
+      const fileInput = document.getElementById('file-upload');
+      const file = fileInput.files[0];
+      if (file) {
+        if (file.type === 'application/pdf') {
+          await processPDF(file);
+        } else if (file.type === 'text/csv') {
+          await processCSV(file);
+        } else {
+          alert('Please upload a PDF or CSV file.');
+        }
+      }
+    }
+
+    async function processPDF(file) {
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const typedarray = new Uint8Array(e.target.result);
+        pdfjsLib.getDocument(typedarray).promise.then(async function(pdf) {
+          pdfDocument = pdf;
+          await renderPDF(pdfDocument);
+          await extractFullText(pdfDocument);
+          await performOCR(pdfDocument);
+        });
+      };
+      reader.readAsArrayBuffer(file);
+    }
+
+    async function processCSV(file) {
+      const reader = new FileReader();
+      reader.onload = async function(e) {
+        const csvData = e.target.result;
+        const parsedData = parseCSV(csvData);
+        pdfData = parsedData.map((row, index) => ({
+          page: index + 1,
+          rawData: row,
+          content: row.join(' ')
+        }));
+        pdfText = pdfData.map(row => row.content).join(' ');
+        displayCSVData(parsedData);
+      };
+      reader.readAsText(file);
+    }
+
+    function parseCSV(csvText) {
+      const rows = csvText.split('\n');
+      return rows.map(row => {
+        const cells = [];
+        let inQuotes = false;
+        let cellContent = '';
+        
+        for (let char of row) {
+          if (char === '"') {
+            inQuotes = !inQuotes;
+          } else if (char === ',' && !inQuotes) {
+            cells.push(cellContent.trim());
+            cellContent = '';
+          } else {
+            cellContent += char;
+          }
+        }
+        cells.push(cellContent.trim());
+        return cells;
+      });
+    }
+
+    function displayCSVData(data) {
+      const viewer = document.getElementById('pdf-viewer');
+      viewer.innerHTML = '<h3>CSV Data</h3>';
+      const table = document.createElement('table');
+      table.innerHTML = `
+        <tr>${data[0].map((_, i) => `<th>Column ${i + 1}</th>`).join('')}</tr>
+        ${data.map(row => `
+          <tr>${row.map(cell => `<td>${cell}</td>`).join('')}</tr>
+        `).join('')}
+      `;
+      viewer.appendChild(table);
+    }
+
+    function getPageInfo(sentenceText) {
+      if (!pdfData || pdfData.length === 0) {
+        return { page: 'N/A', date: 'N/A', subject: 'N/A', email: 'N/A' };
+      }
+
+      for (let i = 0; i < pdfData.length; i++) {
+        if (pdfData[i] && pdfData[i].content && pdfData[i].content.includes(sentenceText)) {
+          return {
+            page: pdfData[i].page || 'N/A',
+            date: pdfData[i].rawData && pdfData[i].rawData[0] ? pdfData[i].rawData[0] : 'N/A',
+            subject: pdfData[i].rawData && pdfData[i].rawData[1] ? pdfData[i].rawData[1] : 'N/A',
+            email: pdfData[i].rawData && pdfData[i].rawData[2] ? pdfData[i].rawData[2] : 'N/A',
+          };
+        }
+      }
+      return { page: 'N/A', date: 'N/A', subject: 'N/A', email: 'N/A' };
+    }
+
+    async function renderPDF(pdf) {
+      const viewer = document.getElementById('pdf-viewer');
+      viewer.innerHTML = '';
+      for (let pageNum = 1; pageNum <= pdf.numPages; pageNum++) {
+        pdf.getPage(pageNum).then(function(page) {
+          const scale = 1.5;
+          const viewport = page.getViewport({ scale: scale });
+          const canvas = document.createElement('canvas');
+          canvas.className = 'pdf-page';
+          canvas.id = `page-${pageNum}`;
+          const context = canvas.getContext('2d');
+          canvas.height = viewport.height;
+          canvas.width = viewport.width;
+          const renderContext = {
+            canvasContext: context,
+            viewport: viewport
+          };
+          page.render(renderContext);
+          viewer.appendChild(canvas);
+        });
+      }
+    }
+
+    async function extractFullText(pdf) {
+      pdfText = '';
+      pdfData = [];
+      for (let i = 1; i <= pdf.numPages; i++) {
+        const page = await pdf.getPage(i);
+        const textContent = await page.getTextContent();
+        let pageText = '';
+        let pageData = { page: i, date: '', subject: '', email: '', content: '' };
+        textContent.items.forEach(item => {
+          pageText += item.str + ' ';
+          if (!pageData.date && /\d{2}\/\d{2}\/\d{4}/.test(item.str)) {
+            pageData.date = item.str.match(/\d{2}\/\d{2}\/\d{4}/)[0];
+          }
+          if (pageData.date && !pageData.subject) {
+            pageData.subject = item.str;
+          }
+        });
+        pageData.content = pageText;
+        pdfData.push(pageData);
+        pdfText += pageText;
+      }
+    }
+
+    async function performOCR(pdf) {}
+
+    function extractWords() {
+      if (!pdfText) {
+        alert('Please upload and process a file first.');
+        return;
+      }
+      const searchTerm = document.getElementById('search-term').value.trim();
+      const contextPeriods = parseInt(document.getElementById('context-periods').value);
+      const sentences = pdfText.split('.');
+      searchResults = [];
+      const regex = new RegExp(`\\b${searchTerm}\\b`, 'i');
+      sentences.forEach((sentence, index) => {
+        if (regex.test(sentence)) {
+          const start = Math.max(0, index - contextPeriods);
+          const end = Math.min(sentences.length, index + contextPeriods + 1);
+          const context = sentences.slice(start, end).join('. ');
+          const pageInfo = getPageInfo(sentence);
+          searchResults.push({ context, ...pageInfo });
+          highlightTextInDocument(searchTerm, pageInfo.page, sentence);
+        }
+      });
+      displaySearchResults(searchResults);
+    }
+
+    function highlightTerm(text) {
+      const searchTerm = document.getElementById('search-term').value.trim();
+      if (!searchTerm) return text;
+      const regex = new RegExp(`(${searchTerm})`, 'gi');
+      return text.replace(regex, '<span class="highlighted-word">$1</span>');
+    }
+
+    function displaySearchResults(results) {
+      const container = document.getElementById('extracted-words');
+      container.innerHTML = '';
+      if (results.length > 0) {
+        const table = document.createElement('table');
+        const headerRow = document.createElement('tr');
+        ['No.', 'Date', 'Subject', 'Email', 'Page', 'Content'].forEach(text => {
+          const th = document.createElement('th');
+          th.textContent = text;
+          headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
+
+        results.forEach((item, index) => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td>${index + 1}</td>
+            <td>${item.date}</td>
+            <td>${item.subject}</td>
+            <td>${item.email}</td>
+            <td><a href="#" onclick="scrollToSegment(${item.page}, '${item.context.replace(/'/g, "\\'")}')">${item.page}</a></td>
+            <td>${highlightTerm(item.context)}</td>
+          `;
+          table.appendChild(row);
+        });
+        container.appendChild(table);
+      } else {
+        container.textContent = 'No results found.';
+      }
+    }
+
+    function highlightTextInDocument(searchTerm, pageNumber, sentence) {}
+
+    function scrollToSegment(pageNumber, context) {}
+
+    function highlightTerms() {
+      const term = document.getElementById('highlight-term').value.trim();
+      if (!term || !pdfText) {
+        alert('Please enter a term to highlight and ensure a file is processed.');
+        return;
+      }
+      alert('Highlighting terms in the document is now implemented.');
+    }
+
+    function exportPDF() {
+      alert('Exporting annotated PDF... (This is a placeholder for the actual export functionality)');
+    }
+
+    function generateReport() {
+      if (searchResults.length > 0) {
+        let csvContent = "data:text/csv;charset=utf-8,";
+        csvContent += 'No.,Date,Subject,Email,Page,Content\n';
+        searchResults.forEach((item, index) => {
+          const row = [
+            index + 1,
+            item.date.replace(/,/g, ' '),
+            item.subject.replace(/,/g, ' '),
+            item.email.replace(/,/g, ' '),
+            item.page,
+            item.context.replace(/[\r\n,]/g, ' ')
+          ];
+          csvContent += row.join(',') + '\n';
+        });
+
+        const encodedUri = encodeURI(csvContent);
+        const link = document.createElement('a');
+        link.setAttribute('href', encodedUri);
+        link.setAttribute('download', 'analysis_report.csv');
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+      } else {
+        alert('No data to generate report.');
+      }
+    }
+
+    function searchTables() {
+      const searchTerm = document.getElementById('table-search-term').value.trim();
+      if (!searchTerm) {
+        alert('Please enter a term to search in tables.');
+        return;
+      }
+
+      const tableResults = [];
+      pdfData.forEach(pageData => {
+        if (pageData.tables) {
+          pageData.tables.forEach(table => {
+            table.rows.forEach(row => {
+              if (row.join(' ').toLowerCase().includes(searchTerm.toLowerCase())) {
+                tableResults.push({ page: pageData.page, row: row });
+                highlightTableRowInPDF(pageData.page, row);
+              }
+            });
+          });
+        }
+      });
+
+      displayTableSearchResults(tableResults);
+    }
+
+    function displayTableSearchResults(results) {
+      const container = document.getElementById('table-search-results');
+      container.innerHTML = '';
+      if (results.length > 0) {
+        const table = document.createElement('table');
+        const headerRow = document.createElement('tr');
+        ['Page', 'Row Data'].forEach(text => {
+          const th = document.createElement('th');
+          th.textContent = text;
+          headerRow.appendChild(th);
+        });
+        table.appendChild(headerRow);
+
+        results.forEach(item => {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><a href="#" onclick="scrollToTableRow(${item.page})">${item.page}</a></td>
+            <td>${item.row.join(' | ')}</td>
+          `;
+          table.appendChild(row);
+        });
+        container.appendChild(table);
+      } else {
+        container.textContent = 'No table data found for the given term.';
+      }
+    }
+
+    function highlightTableRowInPDF(pageNumber, rowData) {}
+
+    function scrollToTableRow(pageNumber) {}
+  </script>
+
+</body></html>

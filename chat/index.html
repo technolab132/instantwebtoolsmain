@@ -1,0 +1,436 @@
+<html><head>
+    <meta charset="UTF-8">
+    <title>Chat Room</title>
+    <style>
+        body {
+            margin: 0;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+            background-color: #000000;
+            color: #ffffff;
+        }
+        #app-container {
+            display: flex;
+            height: 100vh;
+        }
+        #sidebar {
+            width: 260px;
+            background-color: #1c1c1e;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        #logo {
+            font-size: 24px;
+            font-weight: bold;
+            margin-bottom: 30px;
+        }
+        #new-chat-button {
+            background-color: #2c2c2e;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            font-size: 16px;
+            text-align: left;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-bottom: 20px;
+        }
+        #new-chat-button:hover {
+            background-color: #38383a;
+        }
+        #chat-list {
+            flex-grow: 1;
+            overflow-y: auto;
+        }
+        .chat-item {
+            padding: 12px;
+            margin-bottom: 10px;
+            background-color: #2c2c2e;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 16px;
+            color: #ffffff;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+            overflow: hidden;
+        }
+        .chat-item.active {
+            background-color: #0a84ff;
+        }
+        .chat-item:hover {
+            background-color: #38383a;
+        }
+        #chat-container {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+        }
+        #chat-header {
+            background-color: #1c1c1e;
+            padding: 20px;
+            border-bottom: 1px solid #2c2c2e;
+            display: flex;
+            align-items: center;
+        }
+        #chat-title {
+            margin: 0;
+            font-size: 20px;
+            flex-grow: 1;
+        }
+        #chat-room-link {
+            font-size: 12px;
+            word-break: break-all;
+            color: #8e8e93;
+        }
+        #messages {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .message {
+            margin-bottom: 15px;
+        }
+        .message .meta {
+            font-size: 12px;
+            color: #8e8e93;
+            margin-bottom: 5px;
+        }
+        .message.user .meta {
+            text-align: right;
+        }
+        .message p {
+            background-color: #2c2c2e;
+            color: #ffffff;
+            padding: 12px;
+            border-radius: 20px;
+            max-width: 60%;
+            margin: 0;
+        }
+        .message.user p {
+            background-color: #0a84ff;
+        }
+        .message.user {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-end;
+        }
+        #input-area {
+            display: flex;
+            padding: 20px;
+            border-top: 1px solid #2c2c2e;
+            background-color: #1c1c1e;
+        }
+        #message-input {
+            flex: 1;
+            padding: 12px;
+            background-color: #2c2c2e;
+            color: #ffffff;
+            border: none;
+            border-radius: 8px;
+            margin-right: 10px;
+            font-size: 16px;
+            outline: none;
+        }
+        #send-button {
+            background-color: #0a84ff;
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        #chat-actions {
+            background-color: #1c1c1e;
+            padding: 20px;
+            border-top: 1px solid #2c2c2e;
+            display: flex;
+        }
+        #chat-actions button {
+            background-color: #2c2c2e;
+            color: #ffffff;
+            border: none;
+            padding: 10px 15px;
+            font-size: 14px;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        #chat-actions button:hover {
+            background-color: #38383a;
+        }
+        #username-modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(28, 28, 30, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        #username-modal-content {
+            background: #2c2c2e;
+            padding: 30px;
+            border-radius: 12px;
+            text-align: center;
+        }
+        #username-modal-content h3 {
+            color: #ffffff;
+            margin-bottom: 20px;
+            font-size: 24px;
+        }
+        #username-input {
+            width: 80%;
+            padding: 12px;
+            font-size: 16px;
+            border: none;
+            border-radius: 8px;
+            background-color: #1c1c1e;
+            color: #ffffff;
+            margin-bottom: 20px;
+            outline: none;
+        }
+        #username-submit-button {
+            background-color: #0a84ff;
+            color: #ffffff;
+            border: none;
+            padding: 12px 20px;
+            font-size: 16px;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        #username-submit-button:hover {
+            background-color: #5e5ce6;
+        }
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1c1c1e;
+        }
+        ::-webkit-scrollbar-thumb {
+            background-color: #3a3a3c;
+            border-radius: 4px;
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: #5a5a5c;
+        }
+    </style>
+</head>
+<body>
+    <div id="app-container">
+        <div id="sidebar">
+            <div id="logo">Chat App</div>
+            <button id="new-chat-button">+ New Chat</button>
+            <div id="chat-list">
+            </div>
+        </div>
+        <div id="chat-container">
+            <div id="chat-header">
+                <h2 id="chat-title">Chat Room</h2>
+                <div id="chat-room-link"></div>
+            </div>
+            <div id="messages"></div>
+            <div id="input-area">
+                <input type="text" id="message-input" placeholder="Type your message here...">
+                <button id="send-button">Send</button>
+            </div>
+            <div id="chat-actions">
+                <button id="save-chat-button">Save Chat as PDF</button>
+                <button id="send-link-button">Send Chat Room Link</button>
+                <button id="file-upload-button">Upload File</button>
+                <input type="file" id="file-input">
+            </div>
+        </div>
+    </div>
+
+    <div id="username-modal" style="display: flex;">
+        <div id="username-modal-content">
+            <h3>Enter Your Name</h3>
+            <input type="text" id="username-input" placeholder="Your name...">
+            <button id="username-submit-button">Join Chat</button>
+        </div>
+    </div>
+
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+
+    <script>
+        function getParameterByName(name) {
+            name = name.replace(/[[]/, '\\[').replace(/[\]]/, '\\]');
+            var regex = new RegExp('[\\?&]' + name + '=([^&#]*)'),
+                results = regex.exec(location.search);
+            return results === null ? '' : decodeURIComponent(results[1].replace(/\+/g, ' '));
+        }
+
+        var chatRooms = JSON.parse(localStorage.getItem('chatRooms')) || [];
+        var chatListDiv = document.getElementById('chat-list');
+        var chatTitle = document.getElementById('chat-title');
+        var chatRoomLinkDiv = document.getElementById('chat-room-link');
+        var newChatButton = document.getElementById('new-chat-button');
+        var messagesDiv = document.getElementById('messages');
+        var messageInput = document.getElementById('message-input');
+        var sendButton = document.getElementById('send-button');
+        var saveChatButton = document.getElementById('save-chat-button');
+        var sendLinkButton = document.getElementById('send-link-button');
+        var fileUploadButton = document.getElementById('file-upload-button');
+        var fileInput = document.getElementById('file-input');
+        var usernameModal = document.getElementById('username-modal');
+        var usernameInput = document.getElementById('username-input');
+        var usernameSubmitButton = document.getElementById('username-submit-button');
+        var username = '';
+        var roomId = '';
+        var messagesRef;
+
+        function generateRoomId() {
+            return 'room-' + Date.now();
+        }
+
+        function initChatRoom() {
+            roomId = getParameterByName('roomId');
+
+            if (!roomId) {
+                roomId = generateRoomId();
+                window.history.replaceState(null, null, '?roomId=' + roomId);
+            }
+
+            if (!chatRooms.includes(roomId)) {
+                chatRooms.push(roomId);
+                localStorage.setItem('chatRooms', JSON.stringify(chatRooms));
+            }
+
+            chatTitle.textContent = 'Chat Room - ' + roomId.split('-')[1];
+            chatRoomLinkDiv.textContent = 'Share this link: ' + window.location.href;
+
+            loadChatList();
+            loadMessages();
+
+            sendButton.addEventListener('click', function() {
+                var messageText = messageInput.value.trim();
+                if (messageText !== '') {
+                    var timestamp = new Date().toLocaleString();
+                    messagesRef.push({
+                        text: messageText,
+                        senderName: username,
+                        timestamp: timestamp,
+                        type: 'text'
+                    });
+                    messageInput.value = '';
+                }
+            });
+
+            fileUploadButton.addEventListener('click', function() {
+                fileInput.click();
+            });
+
+            fileInput.addEventListener('change', function(event) {
+                var file = event.target.files[0];
+                if (file) {
+                    var storageRef = firebase.storage().ref('chatrooms/' + roomId + '/files/' + file.name);
+                    storageRef.put(file).then(function(snapshot) {
+                        snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                            var timestamp = new Date().toLocaleString();
+                            messagesRef.push({
+                                text: downloadURL,
+                                senderName: username,
+                                timestamp: timestamp,
+                                type: 'file',
+                                fileName: file.name
+                            });
+                        });
+                    });
+                }
+            });
+        }
+
+        if (localStorage.getItem('username')) {
+            username = localStorage.getItem('username');
+            usernameModal.style.display = 'none';
+            initChatRoom();
+        } else {
+            usernameModal.style.display = 'flex';
+        }
+
+        usernameSubmitButton.addEventListener('click', function() {
+            username = usernameInput.value.trim();
+            if (username !== '') {
+                localStorage.setItem('username', username);
+                usernameModal.style.display = 'none';
+                initChatRoom();
+            }
+        });
+
+        function loadChatList() {
+            chatListDiv.innerHTML = '';
+
+            chatRooms.forEach(function(room) {
+                var chatItem = document.createElement('div');
+                chatItem.classList.add('chat-item');
+                chatItem.textContent = 'Chat ' + room.split('-')[1];
+                chatItem.dataset.roomId = room;
+
+                if (room === roomId) {
+                    chatItem.classList.add('active');
+                }
+
+                chatItem.addEventListener('click', function() {
+                    if (roomId !== this.dataset.roomId) {
+                        window.location.search = '?roomId=' + this.dataset.roomId;
+                    }
+                });
+
+                chatListDiv.appendChild(chatItem);
+            });
+        }
+
+        newChatButton.addEventListener('click', function() {
+            var newRoomId = generateRoomId();
+
+            chatRooms.push(newRoomId);
+            localStorage.setItem('chatRooms', JSON.stringify(chatRooms));
+
+            window.location.search = '?roomId=' + newRoomId;
+        });
+
+        function loadMessages() {
+            messagesDiv.innerHTML = '';
+            if (messagesRef) {
+                messagesRef.off();
+            }
+
+            messagesRef = database.ref('chatrooms/' + roomId + '/messages');
+
+            messagesRef.on('child_added', function(data) {
+                var messageData = data.val();
+                displayMessage(messageData);
+            });
+        }
+
+        window.addEventListener('popstate', function() {
+            initChatRoom();
+        });
+
+        var firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_AUTH_DOMAIN",
+            databaseURL: "YOUR_DATABASE_URL",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_STORAGE_BUCKET",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        var database = firebase.database();
+
+        if (localStorage.getItem('username')) {
+            initChatRoom();
+        } 
+    </script>
+
+</body></html>

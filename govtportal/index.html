@@ -1,0 +1,509 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>JUSTICE MINDS Secure Chat Interface</title>
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f0f2f5;
+            color: #333;
+        }
+        .container {
+            display: flex;
+            height: 100vh;
+        }
+        .sidebar {
+            width: 250px;
+            background-color: #1a3c6e;
+            color: white;
+            padding: 20px;
+            overflow-y: auto;
+        }
+        .main-content {
+            flex-grow: 1;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        }
+        .chat-area {
+            flex-grow: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background-color: white;
+        }
+        .input-area {
+            padding: 20px;
+            background-color: #e9ecef;
+            display: flex;
+        }
+        .input-area input {
+            flex-grow: 1;
+            margin-right: 10px;
+            padding: 10px;
+        }
+        .input-area button {
+            padding: 10px 20px;
+        }
+        .card-column {
+            width: 300px;
+            background-color: #e9ecef;
+            padding: 20px;
+            overflow-y: auto;
+            position: relative;
+        }
+        .card {
+            background-color: #2c5799;
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 20px;
+            color: white;
+        }
+        .card-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+            min-height: 1.2em;
+        }
+        .card-title:focus {
+            outline: none;
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        .thumbnail-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 5px;
+        }
+        .thumbnail {
+            width: calc(33.33% - 5px);
+            padding-top: calc(33.33% - 5px);
+            background-size: cover;
+            background-position: center;
+            border-radius: 3px;
+            cursor: pointer;
+            position: relative;
+        }
+        .thumbnail input[type="file"] {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0;
+            cursor: pointer;
+        }
+        .card-actions {
+            display: flex;
+            justify-content: space-between;
+            margin-top: 10px;
+        }
+        .card-actions button {
+            padding: 5px 10px;
+            background-color: #4a6ea9;
+            color: white;
+            border: none;
+            border-radius: 3px;
+            cursor: pointer;
+        }
+        .dropdown-container {
+            margin-top: 10px;
+        }
+        .dropdown {
+            margin-bottom: 10px;
+        }
+        .dropdown-button {
+            background-color: #4a6ea9;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            width: 100%;
+            text-align: left;
+        }
+        .dropdown-button:focus {
+            outline: none;
+            background-color: #3a5e99;
+        }
+        .dropdown-content {
+            display: none;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 5px;
+        }
+        .dropdown-content textarea {
+            width: 100%;
+            margin-top: 5px;
+            min-height: 100px;
+        }
+        .comments-section {
+            margin-top: 15px;
+            background-color: #f8f9fa;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .comment {
+            margin-bottom: 10px;
+            padding: 5px;
+            background-color: #e9ecef;
+            border-radius: 3px;
+        }
+        .logo {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            max-width: 200px;
+            max-height: 200px;
+            opacity: 0.5;
+        }
+        #addParticipantForm {
+            margin-top: 20px;
+        }
+        #addParticipantForm input {
+            margin-right: 10px;
+        }
+        .markdown-preview {
+            background-color: white;
+            color: black;
+            padding: 10px;
+            border-radius: 5px;
+            margin-top: 10px;
+        }
+        .done-button {
+            background-color: #28a745;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 3px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        .add-card-button {
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+            background-color: #28a745;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .popup {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+        }
+        .popup-content {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 5px;
+            max-width: 80%;
+            max-height: 80%;
+            overflow: auto;
+        }
+        .close-popup {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            font-size: 24px;
+            cursor: pointer;
+        }
+        .chat-message {
+            margin-bottom: 10px;
+            padding: 10px;
+            background-color: #e9ecef;
+            border-radius: 5px;
+        }
+        .timestamp {
+            font-size: 0.8em;
+            color: #777;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="sidebar">
+            <h2>JUSTICE MINDS 2024 </h2>
+            <h3>Participants</h3>
+            <div id="participantList"></div>
+            <div id="addParticipantForm">
+                <input type="text" id="newParticipant" placeholder="New participant name">
+                <button onclick="addParticipant()">Add</button>
+            </div>
+        </div>
+        <div class="main-content">
+            <img src= alt="" class="">
+            <div class="chat-area" id="chatArea">
+                <!-- Chat messages will be added here -->
+            </div>
+            <div class="input-area">
+                <input type="text" id="messageInput" placeholder="Type your message...">
+                <button onclick="sendMessage()">Send</button>
+            </div>
+        </div>
+        <div class="card-column" id="cardColumn">
+            <!-- Cards will be added here -->
+        </div>
+    </div>
+
+    <button class="add-card-button" onclick="addCard('New Card', [])">+</button>
+
+    <div id="popup" class="popup">
+        <div class="popup-content">
+            <span class="close-popup" onclick="closePopup()">&times;</span>
+            <div id="popupContent"></div>
+        </div>
+    </div>
+
+    <script>
+        const cardColumn = document.getElementById('cardColumn');
+        const chatArea = document.getElementById('chatArea');
+        const messageInput = document.getElementById('messageInput');
+
+        function addCard(title, files, hasDropdowns = false) {
+            const cardElement = document.createElement('div');
+            cardElement.classList.add('card');
+
+            const titleElement = document.createElement('div');
+            titleElement.classList.add('card-title');
+            titleElement.contentEditable = true;
+            titleElement.textContent = title;
+            cardElement.appendChild(titleElement);
+
+            const thumbnailContainer = document.createElement('div');
+            thumbnailContainer.classList.add('thumbnail-container');
+            files.forEach((file, index) => {
+                if (index < 9) {
+                    addThumbnail(thumbnailContainer, file);
+                }
+            });
+            cardElement.appendChild(thumbnailContainer);
+
+            const cardActions = document.createElement('div');
+            cardActions.classList.add('card-actions');
+            
+            const addButton = document.createElement('button');
+            addButton.textContent = '+';
+            addButton.onclick = () => addThumbnail(thumbnailContainer);
+            
+            const deleteButton = document.createElement('button');
+            deleteButton.textContent = 'X';
+            deleteButton.onclick = () => cardElement.remove();
+            
+            cardActions.appendChild(addButton);
+            cardActions.appendChild(deleteButton);
+            cardElement.appendChild(cardActions);
+
+            if (hasDropdowns) {
+                const dropdownContainer = document.createElement('div');
+                dropdownContainer.classList.add('dropdown-container');
+                
+                for (let i = 1; i <= 3; i++) {
+                    const dropdown = document.createElement('div');
+                    dropdown.classList.add('dropdown');
+                    
+                    const button = document.createElement('button');
+                    button.classList.add('dropdown-button');
+                    button.contentEditable = true;
+                    button.textContent = `Dropdown ${i}`;
+                    button.onclick = (e) => {
+                        if (e.target === button) {
+                            toggleDropdown(`dropdown${i}`);
+                        }
+                    };
+                    
+                    const content = document.createElement('div');
+                    content.id = `dropdown${i}`;
+                    content.classList.add('dropdown-content');
+                    
+                    const textarea = document.createElement('textarea');
+                    textarea.placeholder = `Enter markdown for Dropdown ${i}`;
+                    textarea.oninput = () => updateMarkdownPreview(textarea, `preview${i}`);
+                    
+                    const preview = document.createElement('div');
+                    preview.id = `preview${i}`;
+                    preview.classList.add('markdown-preview');
+                    
+                    const doneButton = document.createElement('button');
+                    doneButton.textContent = 'Done';
+                    doneButton.classList.add('done-button');
+                    doneButton.onclick = () => toggleEditMode(content, textarea, preview);
+                    
+                    content.appendChild(textarea);
+                    content.appendChild(preview);
+                    content.appendChild(doneButton);
+                    dropdown.appendChild(button);
+                    dropdown.appendChild(content);
+                    dropdownContainer.appendChild(dropdown);
+                }
+                
+                cardElement.appendChild(dropdownContainer);
+
+                const commentsSection = document.createElement('div');
+                commentsSection.classList.add('comments-section');
+                commentsSection.innerHTML = `
+                    <h4>Comments</h4>
+                    <div id="comments-${title.replace(/\s+/g, '-').toLowerCase()}"></div>
+                    <textarea placeholder="Add a comment..."></textarea>
+                    <button onclick="addComment(this, '${title.replace(/\s+/g, '-').toLowerCase()}')">Submit Comment</button>
+                `;
+                cardElement.appendChild(commentsSection);
+            }
+
+            cardColumn.appendChild(cardElement);
+        }
+
+        function addThumbnail(container, file = null) {
+            if (container.childElementCount < 9) {
+                const thumbnail = document.createElement('div');
+                thumbnail.classList.add('thumbnail');
+                
+                const fileInput = document.createElement('input');
+                fileInput.type = 'file';
+                fileInput.onchange = (e) => handleFileUpload(e, thumbnail);
+                
+                thumbnail.appendChild(fileInput);
+                
+                if (file) {
+                    thumbnail.style.backgroundImage = `url(${file.thumbnail})`;
+                    thumbnail.onclick = () => showFile(file.title, file.content);
+                } else {
+                    thumbnail.style.backgroundImage = `url(https://via.placeholder.com/100?text=New)`;
+                }
+                
+                container.appendChild(thumbnail);
+            } else {
+                alert('Maximum of 9 thumbnails reached.');
+            }
+        }
+
+        function handleFileUpload(event, thumbnail) {
+            const file = event.target.files[0];
+            if (file) {
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    thumbnail.style.backgroundImage = `url(${e.target.result})`;
+                    thumbnail.onclick = () => showFile(file.name, e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function addComment(button, cardId) {
+            const textarea = button.previousElementSibling;
+            const comment = textarea.value.trim();
+            if (comment) {
+                const commentsContainer = document.getElementById(`comments-${cardId}`);
+                const commentElement = document.createElement('div');
+                commentElement.classList.add('comment');
+                commentElement.textContent = comment;
+                commentsContainer.appendChild(commentElement);
+                textarea.value = '';
+            }
+        }
+
+        function showFile(title, content) {
+            const popup = document.getElementById('popup');
+            const popupContent = document.getElementById('popupContent');
+            popupContent.innerHTML = `<h2>${title}</h2>`;
+            
+            if (content.startsWith('data:image')) {
+                popupContent.innerHTML += `<img src="${content}" alt="${title}" style="max-width: 100%; max-height: 80vh;">`;
+            } else {
+                popupContent.innerHTML += `<pre>${content}</pre>`;
+            }
+            
+            popup.style.display = 'block';
+        }
+
+        function closePopup() {
+            document.getElementById('popup').style.display = 'none';
+        }
+
+        function toggleDropdown(id) {
+            const content = document.getElementById(id);
+            content.style.display = content.style.display === 'block' ? 'none' : 'block';
+        }
+
+        function updateMarkdownPreview(textarea, previewId) {
+            const preview = document.getElementById(previewId);
+            preview.innerHTML = marked.parse(textarea.value);
+        }
+
+        function toggleEditMode(content, textarea, preview) {
+            if (textarea.style.display !== 'none') {
+                textarea.style.display = 'none';
+                preview.style.display = 'block';
+                content.querySelector('.done-button').textContent = 'Edit';
+            } else {
+                textarea.style.display = 'block';
+                preview.style.display = 'none';
+                content.querySelector('.done-button').textContent = 'Done';
+            }
+        }
+
+        function addParticipant() {
+            const newParticipantInput = document.getElementById('newParticipant');
+            const participantName = newParticipantInput.value.trim();
+            if (participantName) {
+                const participantList = document.getElementById('participantList');
+                const participantElement = document.createElement('div');
+                participantElement.textContent = participantName;
+                participantList.appendChild(participantElement);
+                newParticipantInput.value = '';
+            }
+        }
+
+        function sendMessage() {
+            const message = messageInput.value.trim();
+            if (message) {
+                const messageElement = document.createElement('div');
+                messageElement.classList.add('chat-message');
+                const timestamp = new Date().toLocaleString();
+                messageElement.innerHTML = `
+                    <div>${message}</div>
+                    <div class="timestamp">${timestamp}</div>
+                `;
+                chatArea.appendChild(messageElement);
+                messageInput.value = '';
+                chatArea.scrollTop = chatArea.scrollHeight;
+            }
+        }
+
+        // Add example cards
+        addCard('Project Alpha', [
+            {title: 'Document 1', thumbnail: 'https://via.placeholder.com/100?text=Doc1', content: 'This is the content of Document 1.'},
+            {title: 'Image 1', thumbnail: 'https://via.placeholder.com/100?text=Image1', content: 'This is an image.'},
+            {title: 'Spreadsheet', thumbnail: 'https://via.placeholder.com/100?text=Sheet', content: 'Spreadsheet data would be displayed here.'},
+        ]);
+
+        addCard('Project Beta', [
+            {title: 'Report', thumbnail: 'https://via.placeholder.com/100?text=Report', content: 'This is the project report.'},
+            {title: 'Presentation', thumbnail: 'https://via.placeholder.com/100?text=Pres', content: 'Presentation slides would be displayed here.'},
+            {title: 'Budget', thumbnail: 'https://via.placeholder.com/100?text=Budget', content: 'Budget details would be shown here.'},
+        ]);
+
+        addCard('Dropdowns Card', [], true);
+    </script>
+</body>
+</html>

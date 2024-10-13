@@ -1,0 +1,491 @@
+<html><head>
+    <title>HTML Editor and LLM/GPT Integration Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        h1, h2 {
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            height: 200px;
+            font-family: monospace;
+            font-size: 14px;
+        }
+        #preview {
+            border: 1px solid #ccc;
+            margin-top: 20px;
+            padding: 10px;
+            min-height: 200px;
+        }
+        #chat {
+            margin-top: 40px;
+        }
+        #chat-messages {
+            border: 1px solid #ccc;
+            padding: 10px;
+            min-height: 150px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        #chat-input {
+            width: 100%;
+            margin-top: 10px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+        }
+        input[type="text"] {
+            width: 100%;
+            padding: 8px;
+            margin-top: 5px;
+            box-sizing: border-box;
+        }
+        .message {
+            margin-bottom: 10px;
+        }
+        .user-message {
+            color: #0000cc;
+        }
+        .assistant-message {
+            color: #cc0000;
+        }
+    </style>
+</head>
+<body>
+    <h1>HTML Editor and LLM/GPT Integration Tool</h1>
+
+    <h2>HTML Editor</h2>
+    <textarea id="html-input" placeholder="Enter your HTML code here"></textarea>
+    <button id="save-button">Save as HTML File</button>
+    <div id="preview">
+
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AI-Powered Video Analyzer</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #121212;
+            color: #e0e0e0;
+            margin: 0;
+            padding: 20px;
+            line-height: 1.6;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #1e1e1e;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0, 255, 255, 0.1);
+        }
+
+        h1, h2 {
+            color: #00ffff;
+            text-shadow: 0 0 10px rgba(0, 255, 255, 0.5);
+        }
+
+        .left-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .right-column {
+            display: flex;
+            flex-direction: column;
+        }
+
+        input, select, button, .slider {
+            background-color: #2a2a2a;
+            border: 1px solid #00ffff;
+            color: #e0e0e0;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            box-shadow: 0 0 5px rgba(0, 255, 255, 0.2);
+        }
+
+        button {
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        button:hover {
+            background-color: #00ffff;
+            color: #121212;
+        }
+
+        #videoPlayer {
+            width: 100%;
+            margin-top: 20px;
+            border: 1px solid #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .header {
+            background-color: #2a2a2a;
+            padding: 15px;
+            margin-top: 20px;
+            border-radius: 5px;
+            border: 1px solid #00ffff;
+            font-style: italic;
+            font-weight: bold;
+        }
+
+        #thumbnails {
+            display: flex;
+            flex-wrap: wrap;
+            margin-top: 20px;
+        }
+
+        .thumbnail {
+            margin: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+
+        .thumbnail:hover {
+            transform: scale(1.05);
+        }
+
+        .thumbnail img {
+            max-width: 200px;
+            border: 1px solid #00ffff;
+            border-radius: 5px;
+        }
+
+        .thumbnail p {
+            margin-top: 5px;
+            font-size: 0.9em;
+        }
+
+        .thumbnail button {
+            margin-top: 5px;
+            padding: 5px 10px;
+            background-color: #00ffff;
+            border: none;
+            border-radius: 5px;
+            color: #121212;
+            cursor: pointer;
+        }
+
+        .moment {
+            margin-top: 10px;
+            padding: 10px;
+            background-color: #2a2a2a;
+            border-radius: 5px;
+            border: 1px solid #00ffff;
+        }
+
+        .moment button {
+            margin-left: 10px;
+        }
+
+        #moments {
+            margin-top: 20px;
+        }
+    </style>
+
+
+    <div class="container">
+        <div class="left-column">
+            <h1>AI-Powered Video Analyzer</h1>
+            <p>Enter the video URL and select an AI model to process the video.</p>
+            <input type="text" id="videoURL" placeholder="Enter video URL here" size="50">
+            <select id="aiModel">
+                <option value="">Select AI Model</option>
+            </select>
+            <button id="processVideo">Process Video</button>
+
+            <div id="promptSection" style="display:none;">
+                <h2>Find Moments in Video</h2>
+                <input type="text" id="promptInput" placeholder="Enter your prompt here" size="50">
+                <button id="findMoments">Find Moments</button>
+            </div>
+
+            <div id="thumbnails"></div>
+        </div>
+
+        <div class="right-column">
+            <video id="videoPlayer" controls=""></video>
+
+            <div id="headerSection" class="header" style="display: none;"></div>
+
+            <div id="moments"></div>
+        </div>
+    </div>
+
+    <script>
+        const apiEndpoint = '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'; // Replace with your actual API endpoint
+
+        async function getAIModels() {
+            try {
+                const response = await fetch(`${apiEndpoint}/models`);
+                const models = await response.json();
+                const aiModelSelect = document.getElementById('aiModel');
+                models.forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.id;
+                    option.textContent = model.name;
+                    aiModelSelect.appendChild(option);
+                });
+            } catch (error) {
+                console.error('Oops! Failed to fetch AI models:', error);
+                alert('Failed to load AI models. Please try again later.');
+            }
+        }
+
+        async function processVideo(videoURL, modelId) {
+            try {
+                const response = await fetch(`${apiEndpoint}/process`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ videoURL, modelId })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Uh-oh! Video processing failed:', error);
+                throw error;
+            }
+        }
+
+        async function findMoments(transcription, prompt) {
+            try {
+                const response = await fetch(`${apiEndpoint}/analyze`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ transcription, prompt })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Oops! Failed to find moments:', error);
+                throw error;
+            }
+        }
+
+        async function createClip(videoURL, start, end) {
+            try {
+                const response = await fetch(`${apiEndpoint}/clip`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ videoURL, start, end })
+                });
+                return await response.json();
+            } catch (error) {
+                console.error('Clip creation failed:', error);
+                throw error;
+            }
+        }
+
+        function displayMoments(moments) {
+            const momentsDiv = document.getElementById('moments');
+            momentsDiv.innerHTML = '';
+            moments.forEach((moment, index) => {
+                const momentDiv = document.createElement('div');
+                momentDiv.className = 'moment';
+                momentDiv.innerHTML = `
+                    <h3>Moment ${index + 1}</h3>
+                    <p>Time: ${moment.time}s</p>
+                    <p>${moment.text}</p>
+                    <div class="slider-container">
+                        <label class="slider-label">Start</label>
+                        <input type="range" min="0" max="${moment.duration}" value="${moment.time}" class="slider" id="startSlider-${index}">
+                        <label class="slider-label">End</label>
+                        <input type="range" min="${moment.time}" max="${moment.duration}" value="${moment.time + 10}" class="slider" id="endSlider-${index}">
+                    </div>
+                    <button class="playButton">Play</button>
+                    <button class="clipButton">Create Clip</button>
+                `;
+                momentsDiv.appendChild(momentDiv);
+
+                momentDiv.querySelector('.playButton').addEventListener('click', () => {
+                    const videoPlayer = document.getElementById('videoPlayer');
+                    videoPlayer.currentTime = moment.time;
+                    videoPlayer.play();
+                });
+
+                momentDiv.querySelector('.clipButton').addEventListener('click', async () => {
+                    const start = document.getElementById(`startSlider-${index}`).value;
+                    const end = document.getElementById(`endSlider-${index}`).value;
+                    try {
+                        const clip = await createClip(document.getElementById('videoURL').value, start, end);
+                        addThumbnail(clip);
+                        alert('Clip created successfully!');
+                    } catch (error) {
+                        alert('Failed to create clip. Please try again.');
+                    }
+                });
+            });
+        }
+
+        function addThumbnail(clip) {
+            const thumbnailsDiv = document.getElementById('thumbnails');
+            const thumbnailDiv = document.createElement('div');
+            thumbnailDiv.className = 'thumbnail';
+            thumbnailDiv.innerHTML = `
+                <img src="${clip.thumbnailUrl}" alt="Clip thumbnail">
+                <p>Clip: ${clip.start}s - ${clip.end}s</p>
+                <button onclick="playClip('${clip.clipUrl}')">Play Clip</button>
+                <a href="${clip.clipUrl}" download="clip_${clip.start}-${clip.end}.mp4">
+                    <button>Download Clip</button>
+                </a>
+            `;
+            thumbnailsDiv.appendChild(thumbnailDiv);
+        }
+
+        function playClip(clipUrl) {
+            const videoPlayer = document.getElementById('videoPlayer');
+            videoPlayer.src = clipUrl;
+            videoPlayer.load();
+            videoPlayer.play();
+        }
+
+        document.getElementById('processVideo').addEventListener('click', async () => {
+            const videoURL = document.getElementById('videoURL').value;
+            const selectedModel = document.getElementById('aiModel').value;
+            if (videoURL && selectedModel) {
+                try {
+                    const videoPlayer = document.getElementById('videoPlayer');
+                    videoPlayer.src = videoURL;
+                    videoPlayer.load();
+
+                    const result = await processVideo(videoURL, selectedModel);
+                    window.transcription = result.transcription;
+                    document.getElementById('promptSection').style.display = 'block';
+
+                    const headerSection = document.getElementById('headerSection');
+                    headerSection.style.display = 'block';
+                    headerSection.innerHTML = `
+                        <h2>"${result.title}"</h2>
+                        <p>${result.description}</p>
+                        <p>Duration: ${result.duration} | Views: ${result.views}</p>
+                    `;
+                } catch (error) {
+                    alert('Video processing failed. Please try again.');
+                }
+            } else {
+                alert('Please enter a video URL and select an AI model.');
+            }
+        });
+
+        document.getElementById('findMoments').addEventListener('click', async () => {
+            const prompt = document.getElementById('promptInput').value;
+            if (prompt && window.transcription) {
+                try {
+                    const moments = await findMoments(window.transcription, prompt);
+                    displayMoments(moments);
+                } catch (error) {
+                    alert('Failed to find moments. Please try again.');
+                }
+            } else {
+                alert('Please enter a prompt and ensure the video has been processed.');
+            }
+        });
+
+        getAIModels();
+    </script>
+
+</div>
+
+    <h2>LLM/GPT Integration</h2>
+    <label for="api-key">OpenAI API Key:</label>
+    <input type="text" id="api-key" placeholder="Enter your OpenAI API key">
+
+    <div id="chat">
+        <div id="chat-messages"></div>
+        <input type="text" id="chat-input" placeholder="Type your message here">
+        <button id="send-button">Send</button>
+    </div>
+
+    <script>
+        // Update preview when HTML input changes
+        const htmlInput = document.getElementById('html-input');
+        const preview = document.getElementById('preview');
+        htmlInput.addEventListener('input', () => {
+            preview.innerHTML = htmlInput.value;
+        });
+
+        // Save HTML as file
+        const saveButton = document.getElementById('save-button');
+        saveButton.addEventListener('click', () => {
+            const content = htmlInput.value;
+            const blob = new Blob([content], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.download = 'download.html';
+            link.href = url;
+            link.click();
+            URL.revokeObjectURL(url);
+        });
+
+        // Chat functionality
+        const apiKeyInput = document.getElementById('api-key');
+        const chatInput = document.getElementById('chat-input');
+        const chatMessages = document.getElementById('chat-messages');
+        const sendButton = document.getElementById('send-button');
+
+        sendButton.addEventListener('click', () => {
+            const message = chatInput.value.trim();
+            const apiKey = apiKeyInput.value.trim();
+            if (!message) return;
+            if (!apiKey) {
+                alert('Please enter your OpenAI API key.');
+                return;
+            }
+
+            // Display user's message
+            const userMessage = document.createElement('div');
+            userMessage.className = 'message user-message';
+            userMessage.textContent = 'You: ' + message;
+            chatMessages.appendChild(userMessage);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+
+            // Prepare the request payload
+            const data = {
+                model: 'gpt-3.5-turbo',
+                messages: [{ role: 'user', content: message }]
+            };
+
+            // Call OpenAI API
+            fetch('https://api.openai.com/v1/chat/completions', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'Authorization': 'Bearer ' + apiKey
+                },
+                body: JSON.stringify(data)
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.error) {
+                    throw new Error(data.error.message);
+                }
+                const assistantMessage = document.createElement('div');
+                assistantMessage.className = 'message assistant-message';
+                assistantMessage.textContent = 'Assistant: ' + data.choices[0].message.content.trim();
+                chatMessages.appendChild(assistantMessage);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            })
+            .catch(error => {
+                const errorMessage = document.createElement('div');
+                errorMessage.className = 'message assistant-message';
+                errorMessage.textContent = 'Error: ' + error.message;
+                chatMessages.appendChild(errorMessage);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            });
+
+            // Clear chat input
+            chatInput.value = '';
+        });
+    </script>
+
+</body></html>

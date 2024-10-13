@@ -1,0 +1,301 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <title>Legal Case Displayer</title>
+    <link href="https://fonts.googleapis.com/css?family=Helvetica+Neue:400,500,700" rel="stylesheet">
+    <style>
+        body {
+            margin: 0;
+            font-family: 'Helvetica Neue', Arial, sans-serif;
+            background-color: #1d1d1f;
+            color: #f5f5f7;
+            -webkit-font-smoothing: antialiased;
+            text-rendering: optimizeLegibility;
+        }
+        header {
+            background-color: #1d1d1f;
+            padding: 20px 40px;
+            position: fixed;
+            width: 100%;
+            z-index: 1000;
+        }
+        header h1 {
+            margin: 0;
+            font-weight: 700;
+            font-size: 24px;
+            letter-spacing: -0.5px;
+            color: #f5f5f7;
+        }
+        #dark-mode-toggle {
+            position: absolute;
+            right: 40px;
+            top: 25px;
+            background: none;
+            border: none;
+            color: #f5f5f7;
+            font-size: 16px;
+            cursor: pointer;
+            outline: none;
+        }
+        main {
+            padding-top: 100px;
+            display: flex;
+            flex-direction: row;
+            justify-content: center;
+        }
+        #input-section {
+            width: 60%;
+            max-width: 600px;
+            margin-bottom: 40px;
+            margin-right: 20px;
+        }
+        #text-input {
+            width: 100%;
+            height: 200px;
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 12px;
+            background-color: #2c2c2e;
+            color: #f5f5f7;
+            box-shadow: inset 0 1px 3px rgba(0,0,0,0.5);
+            resize: none;
+            outline: none;
+        }
+        #process-button {
+            margin-top: 20px;
+            padding: 12px 24px;
+            font-size: 16px;
+            background-color: #0071e3;
+            color: #fff;
+            border: none;
+            border-radius: 12px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            outline: none;
+        }
+        #process-button:hover {
+            background-color: #005bb5;
+        }
+        #case-list {
+            width: 80%;
+            max-width: 1200px;
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            grid-gap: 20px;
+            margin: 0 auto;
+        }
+        .case-card {
+            background-color: #2c2c2e;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.2);
+            padding: 20px;
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+        .case-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 25px 50px rgba(0,0,0,0.3);
+        }
+        .case-title {
+            font-weight: 600;
+            font-size: 18px;
+            margin-bottom: 10px;
+            color: #f5f5f7;
+        }
+        .case-summary {
+            font-size: 14px;
+            color: #a0a0a5;
+            margin-bottom: 15px;
+        }
+        .case-link {
+            font-size: 14px;
+            color: #0a84ff;
+            text-decoration: none;
+        }
+        .case-link:hover {
+            text-decoration: underline;
+        }
+        #link-container {
+            width: 20%;
+            max-width: 240px;
+            background-color: #2c2c2e;
+            border-radius: 16px;
+            padding: 20px;
+            margin-left: 20px;
+            color: #f5f5f7;
+            overflow: auto;
+        }
+        #link-container h2 {
+            font-size: 16px;
+            margin-bottom: 10px;
+        }
+        #link-container textarea {
+            width: 100%;
+            height: calc(100vh - 200px);
+            background-color: #1d1d1f;
+            color: #f5f5f7;
+            border: none;
+            border-radius: 8px;
+            padding: 10px;
+            resize: none;
+            outline: none;
+        }
+        #case-table {
+            width: 100%;
+            margin-top: 40px;
+            border-collapse: collapse;
+        }
+        #case-table th, #case-table td {
+            border: 1px solid #3a3a3c;
+            padding: 12px;
+            font-size: 14px;
+            color: #f5f5f7;
+        }
+        #case-table th {
+            background-color: #2c2c2e;
+            font-weight: 600;
+        }
+        #case-table td {
+            background-color: #1d1d1f;
+        }
+        footer {
+            padding: 40px;
+            font-size: 14px;
+            color: #a0a0a5;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>Legal Case Displayer</h1>
+        <button id="dark-mode-toggle">Dark Mode</button>
+    </header>
+    <main>
+        <div id="input-section">
+            <textarea id="text-input" placeholder="Paste your legal text here..."></textarea>
+            <button id="process-button">Process Text</button>
+        </div>
+        <div id="link-container">
+            <h2>All Links</h2>
+            <textarea id="link-textarea" readonly=""></textarea>
+        </div>
+    </main>
+    <div id="case-list"></div>
+    <table id="case-table">
+        <thead>
+            <tr>
+                <th>Title</th>
+                <th>Summary</th>
+                <th>Link</th>
+            </tr>
+        </thead>
+        <tbody></tbody>
+    </table>
+    <footer>
+        © 2023 Legal Case Displayer. All rights reserved.
+    </footer>
+    <script>
+        const darkModeToggle = document.getElementById('dark-mode-toggle');
+        darkModeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+        });
+
+        
+        });
+
+        function processText(text) {
+            const caseList = document.getElementById('case-list');
+            caseList.innerHTML = ''; // Clear previous content
+
+            const linkTextarea = document.getElementById('link-textarea');
+            linkTextarea.value = ''; // Clear previous content
+
+            const caseTableBody = document.querySelector('#case-table tbody');
+            caseTableBody.innerHTML = ''; // Clear previous content
+
+            const lines = text.split('\n');
+            let cases = [];
+            let queries = [];
+            let isQuerySection = false;
+
+            lines.forEach(line => {
+                line = line.trim();
+                if (line.startsWith('- **')) {
+                    cases.push(line);
+                } else if (line.startsWith('**Related queries:**')) {
+                    isQuerySection = true;
+                } else if (isQuerySection) {
+                    queries.push(line);
+                }
+            });
+
+            // Process cases
+            cases.forEach(caseEntry => {
+                const regex = /^-\s*\*\*(.*?)\*\*\s*:\s*(.*?)\s*\[(.*?)\]\((.*?)\)/;
+                const match = regex.exec(caseEntry);
+                if (match) {
+                    const title = match[1];
+                    const summary = match[2];
+                    const linkText = match[3];
+                    const linkHref = match[4];
+
+                    // Create case card
+                    const caseCard = document.createElement('div');
+                    caseCard.className = 'case-card';
+
+                    const caseTitle = document.createElement('div');
+                    caseTitle.className = 'case-title';
+                    caseTitle.textContent = title;
+
+                    const caseSummary = document.createElement('div');
+                    caseSummary.className = 'case-summary';
+                    caseSummary.textContent = summary;
+
+                    const caseLink = document.createElement('a');
+                    caseLink.className = 'case-link';
+                    caseLink.href = linkHref;
+                    caseLink.textContent = 'Read Full Case »';
+                    caseLink.target = '_blank';
+
+                    caseCard.appendChild(caseTitle);
+                    caseCard.appendChild(caseSummary);
+                    caseCard.appendChild(caseLink);
+
+                    caseList.appendChild(caseCard);
+
+                    // Append link to link container
+                    linkTextarea.value += linkHref + '\n';
+
+                    // Add data to table
+                    const tableRow = document.createElement('tr');
+
+                    const titleCell = document.createElement('td');
+                    titleCell.textContent = title;
+
+                    const summaryCell = document.createElement('td');
+                    summaryCell.textContent = summary;
+
+                    const linkCell = document.createElement('td');
+                    const linkElement = document.createElement('a');
+                    linkElement.href = linkHref;
+                    linkElement.textContent = linkHref;
+                    linkElement.target = '_blank';
+                    linkElement.style.color = '#0a84ff';
+                    linkElement.style.textDecoration = 'none';
+                    linkCell.appendChild(linkElement);
+
+                    tableRow.appendChild(titleCell);
+                    tableRow.appendChild(summaryCell);
+                    tableRow.appendChild(linkCell);
+
+                    caseTableBody.appendChild(tableRow);
+                }
+            });
+
+            // Process related queries (optional)
+            // ...
+        }
+    </script>
+
+</body></html>
