@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Submit to Google Sheet</title>
+  <style>
+    * {
+    box-sizing: border-box;
+  }
+  
+  body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    background-color: #f0f0f0;
+  }
+  
+  .container {
+    background: white;
+    padding: 20px;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  label {
+    margin-bottom: 5px;
+    font-weight: bold;
+  }
+  
+  input {
+    margin-bottom: 15px;
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+  }
+  
+  button {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+  }
+  
+  button:hover {
+    background-color: #45a049;
+  }
+  
+  #response-message {
+    margin-top: 15px;
+    color: green;
+  }
+  
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>Submit Your Info</h1>
+    <form id="submit-form">
+      <label for="name">Name:</label>
+      <input type="text" id="name" name="name" required>
+
+      <label for="email">Email:</label>
+      <input type="email" id="email" name="email" required>
+
+      <label for="company">Company:</label>
+      <input type="text" id="company" name="company" required>
+
+      <button type="submit">Submit</button>
+      <p id="response-message"></p>
+    </form>
+  </div>
+
+  <script>
+    document.getElementById('submit-form').addEventListener('submit', function (e) {
+    e.preventDefault();  // Prevent default form submission behavior
+  
+    // Form data
+    const name = document.getElementById('name').value;
+    const email = document.getElementById('email').value;
+    const company = document.getElementById('company').value;
+  
+    // Google Apps Script URL (replace this with your own Web App URL)
+    const scriptURL = 'https://script.google.com/macros/s/AKfycbxoHeXl-VLg4WprEvERR0zxEc7CiF_lQAmjAovffj-Mw80H_E_ATqFqsD-hMpz6czs/exec';
+  
+    // Create an object with the form data
+    const formData = {
+      name: name,
+      email: email,
+      company: company
+    };
+  
+    // POST the data to the Google Script
+    fetch(scriptURL, {
+      method: 'POST',
+      body: JSON.stringify(formData),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    })
+      .then(response => response.json())
+      .then(response => {
+        document.getElementById('response-message').textContent = 'Form submitted successfully!';
+      })
+      .catch(error => {
+        document.getElementById('response-message').textContent = 'Form submission failed!';
+        console.error('Error!', error);
+      });
+  });
+  
+  </script>
+</body>
+</html>
