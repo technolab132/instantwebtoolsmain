@@ -1,0 +1,179 @@
+#!/bin/bash
+
+# Exit immediately if a command exits with a non-zero status
+set -e
+
+# Define the root directory (current directory)
+ROOT_DIR=$(pwd)
+
+# Define the directory structure
+DIRECTORIES=(
+  "src/controllers"
+  "src/models"
+  "src/routes"
+  "public/css"
+  "public/js"
+  "public/images"
+  "views"
+  "tests"
+  "config"
+)
+
+# Define the files to be created with their respective boilerplate content
+declare -A FILES
+FILES=(
+  ["src/index.js"]="// src/index.js
+console.log('Welcome to ai_agent_masterchats!');"
+
+  ["src/controllers/mainController.js"]="// src/controllers/mainController.js
+// Add your controller logic here
+"
+
+  ["src/models/userModel.js"]="// src/models/userModel.js
+// Define your user model here
+"
+
+  ["src/routes/mainRoutes.js"]="// src/routes/mainRoutes.js
+// Define your main routes here
+"
+
+  ["public/css/style.css"]="/* public/css/style.css */
+body {
+    font-family: Arial, sans-serif;
+}"
+
+  ["public/js/app.js"]="// public/js/app.js
+console.log('App initialized');"
+
+  ["views/index.ejs"]="<!-- views/index.ejs -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>ai_agent_masterchats</title>
+    <link rel=\"stylesheet\" href=\"/css/style.css\">
+</head>
+<body>
+    <h1>Welcome to ai_agent_masterchats!</h1>
+    <script src=\"/js/app.js\"></script>
+</body>
+</html>"
+
+  ["views/layout.ejs"]="<!-- views/layout.ejs -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title><%= title %></title>
+    <link rel=\"stylesheet\" href=\"/css/style.css\">
+</head>
+<body>
+    <%- body %>
+    <script src=\"/js/app.js\"></script>
+</body>
+</html>"
+
+  ["tests/app.test.js"]="// tests/app.test.js
+const assert = require('assert');
+
+describe('Array', function() {
+  describe('#indexOf()', function() {
+    it('should return -1 when the value is not present', function() {
+      assert.strictEqual([1,2,3].indexOf(4), -1);
+    });
+  });
+});"
+
+  ["config/config.js"]="// config/config.js
+module.exports = {
+    port: process.env.PORT || 3000,
+    db: {
+        uri: 'mongodb://localhost:27017/ai_agent_masterchats'
+    }
+};"
+
+  ["README.md"]="# ai_agent_masterchats
+
+Project description goes here.
+
+## Installation
+
+\`\`\`bash
+npm install
+\`\`\`
+
+## Usage
+
+\`\`\`bash
+npm start
+\`\`\`
+
+## Contributing
+
+Pull requests are welcome. For significant changes, please open an issue first to discuss what you would like to change."
+
+  [".gitignore"]="# Node modules
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# Dependency directories
+jspm_packages/
+bower_components/
+
+# Optional npm cache directory
+.npm
+
+# Optional eslint cache
+.eslintcache
+
+# Optional REPL history
+.node_repl_history
+
+# Output directories
+dist/
+build/"
+)
+
+echo "Starting project setup for ai_agent_masterchats..."
+
+# Create directories
+echo "Creating directories..."
+for DIR in "${DIRECTORIES[@]}"; do
+  mkdir -p "$ROOT_DIR/$DIR"
+  echo "  -> Created directory: $DIR"
+done
+
+# Create files with content
+echo "Creating files..."
+for FILE in "${!FILES[@]}"; do
+  FILE_PATH="$ROOT_DIR/$FILE"
+  echo -e "${FILES[$FILE]}" > "$FILE_PATH"
+  echo "  -> Created file: $FILE"
+done
+
+# Initialize Git (Optional)
+if [ ! -d "$ROOT_DIR/.git" ]; then
+  echo "Initializing Git repository..."
+  git init
+  git add .
+  git commit -m "Initial commit - Set up project structure"
+  echo "  -> Git repository initialized and initial commit made."
+else
+  echo "Git repository already initialized."
+fi
+
+echo "Project setup completed successfully!"
+bash setup.sh
+git status
+git remote add origin https://github.com/your-username/your-repo.git
+  GNU nano 4.8                                                                        setup.sh                                                                        Modified  
+  git commit -m "Initial commit - Set up project structure"
+  echo "  -> Git repository initialized and initial commit made."
+else
+  echo "Git repository already initialized."
+./setup.sh
+chmod +x setup.s
+/clear
+
