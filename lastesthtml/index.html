@@ -1,0 +1,375 @@
+<html lang="en"><head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Justice Minds: Modular HTML Editor live</title>
+    <!-- CodeMirror CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/monokai.min.css">
+    <style>
+        /* Base Styles */
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+        }
+
+        #container {
+            display: flex;
+            height: 100%;
+            width: 100%;
+        }
+
+        /* Editor Container Styles */
+        #editor-container {
+            width: 50%;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+            background-color: #2d2d2d;
+        }
+
+        #editor-header {
+            color: #fff;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+
+        /* CodeMirror Editor Styles */
+        .CodeMirror {
+            height: 90%;
+            border: 1px solid #ddd;
+            font-size: 14px;
+        }
+
+        /* Preview Container Styles */
+        #preview-container {
+            width: 50%;
+            border-left: 2px solid #ddd;
+            box-sizing: border-box;
+            position: relative;
+        }
+
+        #preview-header {
+            text-align: center;
+            margin: 10px 0;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+
+        /* Resizer Styles */
+        #resizer {
+            width: 5px;
+            background-color: #ddd;
+            cursor: ew-resize;
+            position: relative;
+        }
+
+        /* Button Styles */
+        .button-container {
+            margin-top: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+
+        button {
+            padding: 10px;
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            border-radius: 4px;
+            font-size: 14px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Highlighting Headers in Preview */
+        .highlight-header {
+            border: 2px solid #ff9800;
+            padding: 10px;
+            border-radius: 4px;
+            background-color: #fff3e0;
+        }
+
+        /* Tooltip for Live Preview Highlighting */
+        .tooltip {
+            position: absolute;
+            background-color: rgba(255, 152, 0, 0.8);
+            color: white;
+            padding: 5px 10px;
+            border-radius: 4px;
+            pointer-events: none;
+            transition: opacity 0.3s;
+            opacity: 0;
+            z-index: 1000;
+        }
+
+        .tooltip.visible {
+            opacity: 1;
+        }
+
+        /* Line Numbers Toggle */
+        #toggle-lines-container {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        #toggle-lines {
+            margin-left: 10px;
+            transform: scale(1.5);
+            cursor: pointer;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="container">
+        <!-- Editor Container -->
+        <div id="editor-container">
+            <h1 id="editor-header">HTML Editor</h1>
+            <textarea id="editor" placeholder="Write your HTML code here..." style="display: none;"></textarea><div class="CodeMirror cm-s-monokai CodeMirror-wrap" translate="no" style="clip-path: inset(0px);"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5px; left: 34px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; min-height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" tabindex="-1" cm-not-content="true" style="width: 18px; visibility: hidden;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" tabindex="-1" cm-not-content="true" style="height: 18px; visibility: hidden;"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 29px; margin-bottom: 0px; border-right-width: 50px; min-height: 24px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><span><span>​</span>x</span></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors" style=""><div class="CodeMirror-cursor" style="left: 4px; top: 0px; height: 16px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation"><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" aria-hidden="true" style="left: -29px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div></div></div></div></div></div><div style="position: absolute; height: 50px; width: 1px; border-bottom: 0px solid transparent; top: 24px;"></div><div class="CodeMirror-gutters" style="height: 74px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div></div></div></div>
+            <div class="button-container">
+                <button id="save-button">Save as HTML File</button>
+                <div id="toggle-lines-container">
+                    <label for="toggle-lines" style="color: #fff;">Show Line Numbers in Preview</label>
+                    <input type="checkbox" id="toggle-lines">
+                </div>
+            </div>
+        </div>
+
+        <!-- Resizer -->
+        <div id="resizer"></div>
+
+        <!-- Preview Container -->
+        <div id="preview-container">
+            <h1 id="preview-header">Live Preview</h1>
+            <iframe id="preview" srcdoc=""></iframe>
+        </div>
+    </div>
+
+    <!-- Tooltip for Live Preview Highlighting -->
+    <div class="tooltip" id="tooltip">Editing Here</div>
+
+    <!-- CodeMirror JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/htmlmixed/htmlmixed.min.js"></script>
+    <script>
+        // ******** Module: Editor Module ********
+        const EditorModule = (function() {
+            let editorInstance;
+
+            const init = () => {
+                editorInstance = CodeMirror.fromTextArea(document.getElementById('editor'), {
+                    mode: 'htmlmixed',
+                    theme: 'monokai',
+                    lineNumbers: true,
+                    lineWrapping: true,
+                    autofocus: true
+                });
+
+                // Event Listener for Content Change
+                editorInstance.on('change', function() {
+                    PreviewModule.renderHTML(editorInstance.getValue());
+                });
+
+                // Initial Render
+                PreviewModule.renderHTML(editorInstance.getValue());
+            };
+
+            const getContent = () => {
+                return editorInstance.getValue();
+            };
+
+            const getEditor = () => {
+                return editorInstance;
+            };
+
+            return {
+                init,
+                getContent,
+                getEditor
+            };
+        })();
+
+        // ******** Module: Preview Module ********
+        const PreviewModule = (function() {
+            const iframe = document.getElementById('preview');
+
+            const renderHTML = (content) => {
+                iframe.srcdoc = content;
+                // Highlight headers after short delay to ensure content is loaded
+                setTimeout(() => {
+                    highlightHeaders();
+                    if (ToggleModule.isToggleOn()) {
+                        showLineNumbers();
+                    } else {
+                        hideLineNumbers();
+                    }
+                }, 100);
+            };
+
+            const highlightHeaders = () => {
+                const previewDocument = iframe.contentDocument || iframe.contentWindow.document;
+                const headers = previewDocument.querySelectorAll('h1, h2, h3, h4, h5, h6');
+                headers.forEach(header => {
+                    header.classList.add('highlight-header');
+                });
+            };
+
+            const showLineNumbers = () => {
+                const previewDocument = iframe.contentDocument || iframe.contentWindow.document;
+                const lineNumberElements = previewDocument.querySelectorAll('.CodeMirror-lines .CodeMirror-linenumber');
+                lineNumberElements.forEach(lineNumber => {
+                    lineNumber.style.display = 'block';
+                });
+            };
+
+            const hideLineNumbers = () => {
+                const previewDocument = iframe.contentDocument || iframe.contentWindow.document;
+                const lineNumberElements = previewDocument.querySelectorAll('.CodeMirror-lines .CodeMirror-linenumber');
+                lineNumberElements.forEach(lineNumber => {
+                    lineNumber.style.display = 'none';
+                });
+            };
+
+            return {
+                renderHTML
+            };
+        })();
+
+        // ******** Module: Save Module ********
+        const SaveModule = (function() {
+            const init = () => {
+                const saveButton = document.getElementById('save-button');
+                saveButton.addEventListener('click', saveAsHTML);
+            };
+
+            const saveAsHTML = () => {
+                const content = EditorModule.getContent();
+                const blob = new Blob([content], { type: 'text/html' });
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = 'generated_page.html';
+                a.click();
+            };
+
+            return {
+                init
+            };
+        })();
+
+        // ******** Module: Resizer Module ********
+        const ResizerModule = (function() {
+            let isResizing = false;
+
+            const init = () => {
+                const resizer = document.getElementById('resizer');
+                const leftPanel = document.getElementById('editor-container');
+                const rightPanel = document.getElementById('preview-container');
+
+                resizer.addEventListener('mousedown', (e) => {
+                    isResizing = true;
+                    document.body.style.cursor = 'ew-resize';
+                });
+
+                document.addEventListener('mousemove', (e) => {
+                    if (!isResizing) return;
+                    const containerWidth = document.getElementById('container').offsetWidth;
+                    let newWidth = (e.clientX / containerWidth) * 100;
+                    newWidth = Math.max(20, Math.min(newWidth, 80)); // Limit between 20% and 80%
+                    leftPanel.style.width = `${newWidth}%`;
+                    rightPanel.style.width = `${100 - newWidth}%`;
+                });
+
+                document.addEventListener('mouseup', () => {
+                    if (isResizing) {
+                        isResizing = false;
+                        document.body.style.cursor = 'default';
+                    }
+                });
+            };
+
+            return {
+                init
+            };
+        })();
+
+        // ******** Module: Tooltip Module ********
+        const TooltipModule = (function() {
+            const tooltip = document.getElementById('tooltip');
+
+            const showTooltip = (x, y) => {
+                tooltip.style.left = `${x + 10}px`;
+                tooltip.style.top = `${y + 10}px`;
+                tooltip.classList.add('visible');
+            };
+
+            const hideTooltip = () => {
+                tooltip.classList.remove('visible');
+            };
+
+            const init = () => {
+                const editor = EditorModule.getEditor();
+
+                editor.on('cursorActivity', (cm) => {
+                    const cursor = cm.getCursor();
+                    const token = cm.getTokenAt(cursor);
+                    if (token.type === 'tag' && token.string.match(/^<h[1-6]/)) {
+                        const coords = editor.charCoords(cursor, 'page');
+                        showTooltip(coords.left, coords.top);
+                    } else {
+                        hideTooltip();
+                    }
+                });
+            };
+
+            return {
+                init
+            };
+        })();
+
+        // ******** Module: Toggle Module ********
+        const ToggleModule = (function() {
+            let toggleState = false;
+
+            const init = () => {
+                const toggleCheckbox = document.getElementById('toggle-lines');
+                toggleCheckbox.addEventListener('change', function() {
+                    toggleState = this.checked;
+                    PreviewModule.renderHTML(EditorModule.getContent());
+                });
+            };
+
+            const isToggleOn = () => toggleState;
+
+            return {
+                init,
+                isToggleOn
+            };
+        })();
+
+        // ******** Initialize All Modules ********
+        document.addEventListener('DOMContentLoaded', () => {
+            EditorModule.init();
+            SaveModule.init();
+            ResizerModule.init();
+            TooltipModule.init();
+            ToggleModule.init();
+        });
+    </script>
+
+</body></html>
