@@ -1,0 +1,914 @@
+<html><head>
+<base href="">
+<title>Blog Creator App with Multiple Layout Styles</title>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<style>
+/* Reset and base styles */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Dark mode styles */
+body {
+  background-color: #1c1c1e; /* Dark background */
+  color: #f5f5f7; /* Light text */
+  font-family: -apple-system, BlinkMacSystemFont, 'Helvetica Neue', Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+}
+
+.container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px 20px;
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.header h1 {
+  font-weight: 700;
+  font-size: 3.5rem;
+  margin-bottom: 20px;
+  letter-spacing: -1px;
+}
+
+/* Input Section */
+#inputSection {
+  margin-bottom: 40px;
+}
+
+#inputSection textarea {
+  width: 100%;
+  height: 200px;
+  padding: 15px;
+  font-size: 16px;
+  border: 1px solid #3a3a3c;
+  border-radius: 8px;
+  resize: vertical;
+  background-color: #2c2c2e;
+  color: #f5f5f7;
+}
+
+#inputSection .controls {
+  margin-top: 20px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: space-between;
+  align-items: center;
+}
+
+#generateButton {
+  padding: 12px 24px;
+  font-size: 16px;
+  border: none;
+  border-radius: 12px;
+  background-color: #0a84ff;
+  color: #fff;
+  cursor: pointer;
+}
+
+#generateButton:hover {
+  background-color: #0060df;
+}
+
+/* Image Controls */
+.imageControls {
+  margin-top: 20px;
+  display: flex;
+  flex-direction: column;
+}
+
+.imageControls label {
+  margin-bottom: 5px;
+}
+
+.imageControls input[type="range"] {
+  width: 100%;
+}
+
+.imageControls input[type="checkbox"] {
+  margin-right: 10px;
+}
+
+/* Style Selector */
+.styleSelector {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+}
+
+.styleSelector label {
+  margin-right: 10px;
+  font-size: 16px;
+  color: #f5f5f7;
+}
+
+.styleSelector select {
+  padding: 8px;
+  font-size: 16px;
+  border: 1px solid #3a3a3c;
+  border-radius: 8px;
+  background-color: #2c2c2e;
+  color: #f5f5f7;
+}
+
+/* Image Upload */
+.imageUpload {
+  margin-top: 20px;
+}
+
+.imageUpload label {
+  margin-right: 10px;
+  font-size: 16px;
+  color: #f5f5f7;
+}
+
+.imageUpload input {
+  font-size: 16px;
+  color: #f5f5f7;
+}
+
+/* Image Link Input */
+.imageLinkInput {
+  margin-top: 20px;
+  width: 100%;
+}
+
+.imageLinkInput label {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 16px;
+  color: #f5f5f7;
+}
+
+.imageLinkInput input {
+  width: 100%;
+  padding: 10px;
+  font-size: 16px;
+  border: 1px solid #3a3a3c;
+  border-radius: 8px;
+  background-color: #2c2c2e;
+  color: #f5f5f7;
+}
+
+/* Preview Section */
+#previewSection {
+  margin-bottom: 40px;
+}
+
+#output {
+  border: 1px solid #3a3a3c;
+  border-radius: 8px;
+  padding: 40px;
+  background-color: #2c2c2e;
+}
+
+/* Enlarge and capitalize the first letter of each paragraph */
+.enlargeFirstLetter .blogContent p::first-letter {
+  font-size: 3rem;
+  font-weight: bold;
+  color: #0a84ff;
+  text-transform: uppercase;
+}
+
+/* Rich Link Preview Styles */
+.richLink {
+  border: 1px solid #3a3a3c;
+  border-radius: 8px;
+  padding: 15px;
+  margin-bottom: 20px;
+  background-color: #2c2c2e;
+}
+
+.richLinkContent {
+  display: flex;
+  align-items: center;
+}
+
+.richLinkContent img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.richLinkContent span {
+  color: #0a84ff;
+  text-decoration: none;
+  word-break: break-all;
+}
+
+/* Layout Styles */
+
+/* Layout 1: Single Column - Enhanced styles */
+.layout1 .blogContent {
+  max-width: 800px;
+  margin: 0 auto;
+  line-height: 1.8;
+  font-size: 1.1rem;
+}
+
+.layout1 .blogContent p {
+  margin-bottom: 1.5em;
+}
+
+.layout1 .blogTitle {
+  text-align: center;
+  font-size: 2.5rem;
+  margin-bottom: 1.5em;
+  font-weight: bold;
+}
+
+/* Layout 2: Two Columns */
+.layout2 .blogContent {
+  column-count: 2;
+  column-gap: 40px;
+}
+
+/* Layout 3: Three Columns */
+.layout3 .blogContent {
+  column-count: 3;
+  column-gap: 30px;
+}
+
+/* Layout 4: Image Grid */
+.layout4 .blogContent {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 20px;
+}
+
+.layout4 .blogContent p {
+  grid-column: span 2;
+}
+
+.layout4 .imagePlaceholder {
+  grid-column: span 1;
+}
+
+/* Layout 5: Alternating Images */
+.layout5 .blogContent .contentBlock {
+  display: flex;
+  align-items: flex-start;
+  margin-bottom: 30px;
+}
+
+.layout5 .contentBlock:nth-child(even) {
+  flex-direction: row-reverse;
+}
+
+.layout5 .contentBlock img {
+  width: 40%;
+  margin: 0 20px;
+  border-radius: 8px;
+}
+
+.layout5 .contentBlock p {
+  width: 60%;
+}
+
+/* Layout 6: Magazine Style */
+.layout6 .blogContent {
+  column-count: 2;
+  column-gap: 40px;
+  font-family: 'Times New Roman', Times, serif;
+}
+
+.layout6 .blogTitle {
+  font-family: 'Garamond', serif;
+  font-size: 3.5rem;
+  font-weight: bold;
+  text-transform: uppercase;
+  margin-bottom: 60px;
+}
+
+.layout6 .imagePlaceholder {
+  break-inside: avoid;
+  margin: 30px 0;
+}
+
+/* Layout 7: Open Magazine with Page Turning Effect */
+.layout7 .magazine {
+  position: relative;
+  width: 100%;
+  height: 600px;
+  perspective: 2000px;
+  overflow: hidden;
+}
+
+.layout7 .page {
+  width: 50%;
+  height: 100%;
+  background-color: #fff;
+  position: absolute;
+  top: 0;
+  transition: transform 1s;
+  transform-style: preserve-3d;
+  backface-visibility: hidden;
+}
+
+.layout7 .page:nth-child(even) {
+  left: 0;
+  transform-origin: left;
+  z-index: calc(100 - var(--page-number));
+}
+
+.layout7 .page:nth-child(odd) {
+  left: 50%;
+  transform-origin: right;
+  z-index: var(--page-number);
+}
+
+/* Initialize pages to be closed */
+.layout7 .page {
+  transform: rotateY(180deg);
+}
+
+/* Style for turned pages */
+.layout7 .page.turned {
+  transform: rotateY(0deg);
+}
+
+.layout7 .page {
+  --page-number: 0;
+  z-index: calc(100 - var(--page-number));
+}
+
+.layout7 .page.turned {
+  z-index: var(--page-number);
+}
+
+.layout7 .pageContent {
+  backface-visibility: hidden;
+}
+
+/* Layout 8: Image Background */
+.layout8 .blogContent {
+  position: relative;
+  padding: 60px;
+  color: #fff;
+}
+
+.layout8 .blogContent::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-image: url('https://source.unsplash.com/1600x900/?nature');
+  background-size: cover;
+  background-position: center;
+  opacity: 0.4;
+  z-index: -1;
+}
+
+.layout8 .blogTitle {
+  color: #fff;
+}
+
+.layout8 .blogContent p {
+  font-size: 1.25rem;
+  line-height: 1.8;
+}
+
+/* Layout 9: Sidebar Layout */
+.layout9 .blogContent {
+  display: flex;
+}
+
+.layout9 .mainContent {
+  flex: 3;
+  padding-right: 20px;
+}
+
+.layout9 .sidebar {
+  flex: 1;
+  background-color: #2c2c2e;
+  padding: 20px;
+}
+
+.layout9 .sidebar h3 {
+  margin-bottom: 20px;
+}
+
+.layout9 .sidebar ul li {
+  margin-bottom: 10px;
+}
+
+/* Layout 10: Minimalist Centered */
+.layout10 .blogContent {
+  max-width: 800px;
+  margin: 0 auto;
+  text-align: center;
+}
+
+.layout10 .blogContent p {
+  font-size: 1.2rem;
+  line-height: 1.8;
+  margin-bottom: 20px;
+}
+
+.layout10 .imagePlaceholder {
+  margin: 30px 0;
+}
+
+.layout7 .turnPageButton {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: rgba(255,255,255,0.8);
+  border: none;
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  cursor: pointer;
+  z-index: 101;
+}
+
+.layout7 .prevButton {
+  left: 10px;
+}
+
+.layout7 .nextButton {
+  right: 10px;
+}
+
+/* Improved spacing and layout */
+.blogContent, .mainContent {
+  margin-top: 20px;
+}
+
+.blogContent p {
+  margin-bottom: 20px;
+}
+
+/* Styling images */
+.imagePlaceholder img {
+  border: none;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+}
+
+/* Redacted image placeholder */
+.imagePlaceholder div {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Card Styles */
+.card-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(calc(25% - 20px), 1fr));
+  gap: 20px;
+}
+.card {
+  background-color: #2c2c2e;
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  padding: 20px;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.date {
+  color: #888;
+  font-size: 0.9em;
+  margin-bottom: 10px;
+}
+.content {
+  font-size: 0.95em;
+  line-height: 1.4;
+}
+.content h1, .content h2, .content h3, .content h4, .content h5, .content h6 {
+  margin-top: 10px;
+  margin-bottom: 5px;
+  text-transform: uppercase;
+}
+.content strong {
+  font-weight: bold;
+}
+.content ul {
+  padding-left: 20px;
+}
+.content li {
+  margin-bottom: 5px;
+}
+.expand-btn {
+  width: 100%;
+  padding: 10px;
+  background-color: #3a3a3c;
+  border: none;
+  border-radius: 0 0 8px 8px;
+  cursor: pointer;
+  font-weight: bold;
+  margin-top: 10px;
+  color: #f5f5f7;
+}
+.card-content {
+  max-height: 400px;
+  overflow: hidden;
+  transition: max-height 0.3s ease;
+}
+.card-content.expanded {
+  max-height: none;
+}
+#csvInput {
+  width: 100%;
+  height: 100px;
+  margin-bottom: 20px;
+  background-color: #2c2c2e;
+  color: #f5f5f7;
+  border: 1px solid #3a3a3c;
+  border-radius: 8px;
+  padding: 10px;
+}
+#processBtn {
+  display: block;
+  margin: 0 auto 20px;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #0a84ff;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+}
+</style>
+</head>
+<body>
+
+<div class="container">
+  <div class="header">
+    <h1>Blog Creator App</h1>
+  </div>
+
+  <div id="inputSection">
+    <textarea id="blogText" placeholder="Enter your blog text here..."></textarea>
+    <div class="controls">
+      <div class="styleSelector">
+        <label for="styleSelect">Choose Style:</label>
+        <select id="styleSelect">
+          <option value="layout1">Layout 1: Single Column</option>
+          <option value="layout2">Layout 2: Two Columns</option>
+          <option value="layout3">Layout 3: Three Columns</option>
+          <option value="layout4">Layout 4: Image Grid</option>
+          <option value="layout5">Layout 5: Alternating Images</option>
+          <option value="layout6">Layout 6: Magazine Style</option>
+          <option value="layout7">Layout 7: Open Magazine with Page Turning</option>
+          <option value="layout8">Layout 8: Image Background</option>
+          <option value="layout9">Layout 9: Sidebar Layout</option>
+          <option value="layout10">Layout 10: Minimalist Centered</option>
+          <option value="layout11">Layout 11: Hero Image Header</option>
+        </select>
+      </div>
+      <div class="imageControls">
+        <label for="imageSizeSlider">Adjust Image Size (%):</label>
+        <input type="range" id="imageSizeSlider" min="50" max="100" value="100">
+
+        <label>
+          <input type="checkbox" id="redactImages">
+          Redact Images
+        </label>
+      </div>
+      <div class="imageUpload">
+        <label for="imageUploadInput">Upload Images:</label>
+        <input type="file" id="imageUploadInput" accept="image/*" multiple="">
+      </div>
+      <div class="imageLinkInput">
+        <label for="imageLinksInput">Image Links (Comma Separated):</label>
+        <input type="text" id="imageLinksInput" placeholder="Enter image URLs separated by commas">
+      </div>
+      <label>
+        <input type="checkbox" id="enlargeFirstLetter" checked="">
+        Enlarge First Letter
+      </label>
+      <button id="generateButton">Generate Blog</button>
+      <button id="lineBreakButton">Insert Line Break</button>
+    </div>
+  </div>
+
+  <div id="cardCreationSection">
+    <h2>Create Cards from CSV</h2>
+    <textarea id="csvInput" placeholder="Paste your CSV data here..."></textarea>
+    <button id="processBtn">Process CSV</button>
+    <div id="cardContainer" class="card-container"></div>
+  </div>
+
+  <div id="previewSection">
+    <h2>Blog Preview</h2>
+    <div id="output"></div>
+  </div>
+</div>
+
+<script>
+// Set marked options to treat line breaks as actual line breaks
+marked.setOptions({
+  breaks: true,
+});
+
+document.addEventListener('DOMContentLoaded', function() {
+  const imageLinks = [
+    "https://source.unsplash.com/random/800x600?sig=1",
+    "https://source.unsplash.com/random/800x600?sig=2",
+    "https://source.unsplash.com/random/800x600?sig=3",
+    "https://source.unsplash.com/random/800x600?sig=4",
+    "https://source.unsplash.com/random/800x600?sig=5",
+    "https://source.unsplash.com/random/800x600?sig=6",
+    "https://source.unsplash.com/random/800x600?sig=7",
+    "https://source.unsplash.com/random/800x600?sig=8",
+    "https://source.unsplash.com/random/800x600?sig=9",
+    "https://source.unsplash.com/random/800x600?sig=10"
+  ];
+
+  let uploadedImages = [];
+
+  const generateButton = document.getElementById('generateButton');
+  const output = document.getElementById('output');
+  const styleSelect = document.getElementById('styleSelect');
+
+  const imageSizeSlider = document.getElementById('imageSizeSlider');
+  const redactImagesCheckbox = document.getElementById('redactImages');
+  const imageUploadInput = document.getElementById('imageUploadInput');
+  const imageLinksInput = document.getElementById('imageLinksInput');
+  const enlargeFirstLetterCheckbox = document.getElementById('enlargeFirstLetter');
+
+  imageUploadInput.addEventListener('change', function(event) {
+    uploadedImages = [];
+    const files = event.target.files;
+    for (let i = 0; i < files.length; i++) {
+      const fileURL = URL.createObjectURL(files[i]);
+      uploadedImages.push(fileURL);
+    }
+  });
+
+  generateButton.addEventListener('click', () => {
+    const textArea = document.getElementById('blogText');
+    const markdownText = textArea.value;
+
+    // Parse markdown input to HTML
+    const htmlContent = marked.parse(markdownText);
+
+    // Use a temporary element to process the HTML content
+    const tempDiv = document.createElement('div');
+    tempDiv.innerHTML = htmlContent;
+
+    // Convert links to rich links
+    const links = tempDiv.querySelectorAll('a');
+    links.forEach(link => {
+      const url = link.href;
+      // Create a rich link preview
+      const richLinkDiv = createRichLinkPreview(url);
+      link.parentNode.replaceChild(richLinkDiv, link);
+    });
+
+    const paragraphs = Array.from(tempDiv.childNodes).map(node => node.outerHTML);
+    const selectedStyle = styleSelect.value;
+    output.className = selectedStyle;
+
+    // Toggle first letter enlargement based on checkbox
+    if (enlargeFirstLetterCheckbox.checked) {
+      output.classList.add('enlargeFirstLetter');
+    } else {
+      output.classList.remove('enlargeFirstLetter');
+    }
+
+    const imageSize = imageSizeSlider.value;
+    const redactImages = redactImagesCheckbox.checked;
+    const customImageLinks = imageLinksInput.value.split(',').map(link => link.trim()).filter(link => link !== '');
+
+    let imagesToUse = uploadedImages.length > 0 ? uploadedImages :
+                      (customImageLinks.length > 0 ? customImageLinks : imageLinks);
+
+    if (selectedStyle === 'layout7') {
+      let contentHtml = '<div class="magazine">';
+      contentHtml += generateMagazinePages(paragraphs, imageSize, redactImages, imagesToUse);
+      contentHtml += '<button class="turnPageButton prevButton" onclick="prevPage()">&#9664;</button>';
+      contentHtml += '<button class="turnPageButton nextButton" onclick="nextPage()">&#9654;</button>';
+      contentHtml += '</div>';
+      output.innerHTML = contentHtml;
+    } else {
+      let contentHtml = '<div class="blogTitle">My Blog Title</div>';
+      contentHtml += '<div class="blogContent">';
+      if (selectedStyle === 'layout5') {
+        contentHtml += generateAlternatingLayout(paragraphs, imageSize, redactImages, imagesToUse);
+      } else if (selectedStyle === 'layout9') {
+        contentHtml += '<div class="mainContent">';
+        contentHtml += generateParagraphsWithImages(paragraphs, imageSize, redactImages, imagesToUse);
+        contentHtml += '</div>';
+        contentHtml += '<div class="sidebar">';
+        contentHtml += '<h3>About the Author</h3>';
+        contentHtml += '<p>This is sidebar content.</p>';
+        contentHtml += '<h3>Related Posts</h3>';
+        contentHtml += '<ul><li><a href="#">Post 1</a></li><li><a href="#">Post 2</a></li></ul>';
+        contentHtml += '</div>';
+      } else {
+        contentHtml += generateParagraphsWithImages(paragraphs, imageSize, redactImages, imagesToUse);
+      }
+      contentHtml += '</div>';
+      output.innerHTML = contentHtml;
+    }
+  });
+
+  function createRichLinkPreview(url) {
+    const div = document.createElement('div');
+    div.className = 'richLink';
+    div.innerHTML = `
+      <a href="${url}" target="_blank">
+        <div class="richLinkContent">
+          <img src="https://s2.googleusercontent.com/s2/favicons?domain_url=${url}" alt="Favicon" onerror="this.onerror=null; this.src='default-favicon.png';">
+          <span>${url}</span>
+        </div>
+      </a>
+    `;
+    return div;
+  }
+
+  function generateParagraphsWithImages(paragraphs, imageSize, redactImages, imagesToUse) {
+    let html = '';
+    let imageIndex = 0;
+    paragraphs.forEach((para, index) => {
+      html += para;
+      if (imageIndex < imagesToUse.length && (index + 1) % 2 === 0) {
+        html += '<div class="imagePlaceholder">';
+        if (!redactImages) {
+          html += '<img src="' + imagesToUse[imageIndex] + '" alt="Blog Image" onerror="this.onerror=null; this.style.display=\'none\'; console.error(\'Failed to load image: ' + imagesToUse[imageIndex] + '\');" style="width:' + imageSize + '%;height:auto;border-radius:8px;">';
+        } else {
+          html += '<div style="width:' + imageSize + '%;height:auto;background-color:#333;border-radius:8px;">';
+          html += '<p style="color:#fff;text-align:center;padding:20px;">[Image Redacted]</p>';
+          html += '</div>';
+        }
+        html += '</div>';
+        imageIndex++;
+      }
+    });
+    return html;
+  }
+
+  function generateAlternatingLayout(paragraphs, imageSize, redactImages, imagesToUse) {
+    let html = '';
+    let imageIndex = 0;
+    paragraphs.forEach((para, index) => {
+      html += '<div class="contentBlock">';
+      html += para;
+      if (imageIndex < imagesToUse.length) {
+        if (!redactImages) {
+          html += '<img src="' + imagesToUse[imageIndex] + '" alt="Blog Image" onerror="this.onerror=null; this.style.display=\'none\'; console.error(\'Failed to load image: ' + imagesToUse[imageIndex] + '\');" style="width:' + imageSize + '%;border-radius:8px;">';
+        } else {
+          html += '<div style="width:' + imageSize + '%;height:auto;background-color:#333;border-radius:8px;">';
+          html += '<p style="color:#fff;text-align:center;padding:20px;">[Image Redacted]</p>';
+          html += '</div>';
+        }
+        imageIndex++;
+      }
+      html += '</div>';
+    });
+    return html;
+  }
+
+  function generateMagazinePages(paragraphs, imageSize, redactImages, imagesToUse) {
+    let html = '';
+    let pages = [];
+    let pageContent = '';
+    let imageIndex = 0;
+
+    paragraphs.forEach((para, index) => {
+      pageContent += '<p>' + para + '</p>';
+      if (imageIndex < imagesToUse.length && (index + 1) % 2 === 0) {
+        if (!redactImages) {
+          pageContent += '<div class="imagePlaceholder">';
+          pageContent += '<img src="' + imagesToUse[imageIndex] + '" alt="Blog Image" onerror="this.onerror=null; this.style.display=\'none\'; console.error(\'Failed to load image: ' + imagesToUse[imageIndex] + '\');" style="width:' + imageSize + '%;height:auto;border-radius:8px;">';
+          pageContent += '</div>';
+        } else {
+          pageContent += '<div style="width:' + imageSize + '%;height:auto;background-color:#333;border-radius:8px;">';
+          pageContent += '<p style="color:#fff;text-align:center;padding:20px;">[Image Redacted]</p>';
+          pageContent += '</div>';
+        }
+        imageIndex++;
+      }
+      if ((index + 1) % 3 === 0 || index === paragraphs.length - 1) {
+        pages.push(pageContent);
+        pageContent = '';
+      }
+    });
+
+    pages.forEach((content, index) => {
+      html += `<div class="page" style="--page-number: ${index + 1};">`;
+      html += '<div class="pageContent">';
+      if (index === 0) {
+        html += '<div class="blogTitle">My Blog Title</div>';
+      }
+      html += content;
+      html += '</div></div>';
+    });
+
+    return html;
+  }
+
+  window.currentPage = 0;
+
+  window.nextPage = function() {
+    const pages = document.querySelectorAll('.layout7 .page');
+    if (window.currentPage < pages.length) {
+      pages[window.currentPage].classList.add('turned');
+      window.currentPage++;
+    }
+  }
+
+  window.prevPage = function() {
+    const pages = document.querySelectorAll('.layout7 .page');
+    if (window.currentPage > 0) {
+      window.currentPage--;
+      pages[window.currentPage].classList.remove('turned');
+    }
+  }
+
+  // Initialize pages to be closed on load
+  const magazinePages = document.querySelectorAll('.layout7 .page');
+  magazinePages.forEach(page => {
+    page.classList.remove('turned');
+  });
+
+  const lineBreakButton = document.getElementById('lineBreakButton');
+  lineBreakButton.addEventListener('click', () => {
+    const textArea = document.getElementById('blogText');
+    textArea.value += '  \n'; // Markdown line break
+    textArea.focus();
+  });
+
+  const processBtn = document.getElementById('processBtn');
+  const csvInput = document.getElementById('csvInput');
+  const cardContainer = document.getElementById('cardContainer');
+
+  processBtn.addEventListener('click', processCSV);
+
+  function processCSV() {
+    const csvData = csvInput.value;
+    if (!csvData.trim()) {
+      console.error('CSV input is empty');
+      return;
+    }
+    const rows = csvData.split('\n').map(row => row.split(','));
+    if (rows.length < 2) {
+      console.error('Not enough rows in CSV data');
+      return;
+    }
+    const headers = rows[0];
+    const dataRows = rows.slice(1);
+
+    cardContainer.innerHTML = '';
+
+    dataRows.forEach(row => {
+      if (row.length === headers.length) {
+        const card = createCard(headers, row);
+        cardContainer.appendChild(card);
+      } else {
+        console.error('Mismatch in column count for row:', row);
+      }
+    });
+  }
+
+  function createCard(headers, data) {
+    const card = document.createElement('div');
+    card.className = 'card';
+
+    const cardContent = document.createElement('div');
+    cardContent.className = 'card-content';
+
+    const date = document.createElement('div');
+    date.className = 'date';
+    date.textContent = data[headers.indexOf('Date')] || 'No date';
+    cardContent.appendChild(date);
+
+    const content = document.createElement('div');
+    content.className = 'content';
+    
+    const contentIndex = headers.indexOf('Content');
+    const contentData = contentIndex !== -1 && data[contentIndex] ? data[contentIndex] : 'No content available';
+    
+    content.innerHTML = contentData ? marked.parse(contentData) : 'No content available';
+    
+    cardContent.appendChild(content);
+
+    card.appendChild(cardContent);
+
+    const expandBtn = document.createElement('button');
+    expandBtn.className = 'expand-btn';
+    expandBtn.textContent = 'Expand';
+    expandBtn.addEventListener('click', () => {
+      cardContent.classList.toggle('expanded');
+      expandBtn.textContent = cardContent.classList.contains('expanded') ? 'Collapse' : 'Expand';
+    });
+    card.appendChild(expandBtn);
+
+    return card;
+  }
+});
+</script>
+
+
+</body></html>
