@@ -1,7 +1,9 @@
-<html lang="en"><head>
+<!DOCTYPE html>
+<html lang="en">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Justice Minds: Modular HTML Editor live</title>
+    <title>Modular HTML Editor and Preview Tool</title>
     <!-- CodeMirror CSS -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/monokai.min.css">
@@ -13,7 +15,7 @@
             height: 100%;
             font-family: Arial, sans-serif;
             display: flex;
-            flex-direction: column;
+            flex-direction: column;a
         }
 
         #container {
@@ -138,7 +140,7 @@
         <!-- Editor Container -->
         <div id="editor-container">
             <h1 id="editor-header">HTML Editor</h1>
-            <textarea id="editor" placeholder="Write your HTML code here..." style="display: none;"></textarea><div class="CodeMirror cm-s-monokai CodeMirror-wrap" translate="no" style="clip-path: inset(0px);"><div style="overflow: hidden; position: relative; width: 3px; height: 0px; top: 5px; left: 34px;"><textarea autocorrect="off" autocapitalize="off" spellcheck="false" tabindex="0" style="position: absolute; bottom: -1em; padding: 0px; width: 1000px; height: 1em; min-height: 1em; outline: none;"></textarea></div><div class="CodeMirror-vscrollbar" tabindex="-1" cm-not-content="true" style="width: 18px; visibility: hidden;"><div style="min-width: 1px; height: 0px;"></div></div><div class="CodeMirror-hscrollbar" tabindex="-1" cm-not-content="true" style="height: 18px; visibility: hidden;"><div style="height: 100%; min-height: 1px; width: 0px;"></div></div><div class="CodeMirror-scrollbar-filler" cm-not-content="true"></div><div class="CodeMirror-gutter-filler" cm-not-content="true"></div><div class="CodeMirror-scroll" tabindex="-1"><div class="CodeMirror-sizer" style="margin-left: 29px; margin-bottom: 0px; border-right-width: 50px; min-height: 24px; padding-right: 0px; padding-bottom: 0px;"><div style="position: relative; top: 0px;"><div class="CodeMirror-lines" role="presentation"><div role="presentation" style="position: relative; outline: none;"><div class="CodeMirror-measure"><span><span>​</span>x</span></div><div class="CodeMirror-measure"></div><div style="position: relative; z-index: 1;"></div><div class="CodeMirror-cursors" style=""><div class="CodeMirror-cursor" style="left: 4px; top: 0px; height: 16px;">&nbsp;</div></div><div class="CodeMirror-code" role="presentation"><div style="position: relative;"><div class="CodeMirror-gutter-wrapper" aria-hidden="true" style="left: -29px;"><div class="CodeMirror-linenumber CodeMirror-gutter-elt" style="left: 0px; width: 21px;">1</div></div><pre class=" CodeMirror-line " role="presentation"><span role="presentation" style="padding-right: 0.1px;"><span cm-text="">​</span></span></pre></div></div></div></div></div></div><div style="position: absolute; height: 50px; width: 1px; border-bottom: 0px solid transparent; top: 24px;"></div><div class="CodeMirror-gutters" style="height: 74px;"><div class="CodeMirror-gutter CodeMirror-linenumbers" style="width: 29px;"></div></div></div></div>
+            <textarea id="editor" placeholder="Write your HTML code here..."></textarea>
             <div class="button-container">
                 <button id="save-button">Save as HTML File</button>
                 <div id="toggle-lines-container">
@@ -154,7 +156,97 @@
         <!-- Preview Container -->
         <div id="preview-container">
             <h1 id="preview-header">Live Preview</h1>
-            <iframe id="preview" srcdoc=""></iframe>
+            <iframe id="preview" srcdoc="<!DOCTYPE html>
+<html lang=&quot;en&quot;>
+<head>
+    <meta charset=&quot;UTF-8&quot;>
+    <meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;>
+    <title>Code Translator Tool</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+            padding: 0;
+            background-color: #f4f4f4;
+        }
+        .container {
+            display: flex;
+            flex-direction: column;
+            max-width: 600px;
+            margin: auto;
+        }
+        .code-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: #fff;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        .code-input {
+            flex: 1;
+            margin-right: 10px;
+        }
+        .explanation {
+            flex: 1;
+            background: #e7f3fe;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .delete-btn {
+            background: red;
+            color: white;
+            border: none;
+            padding: 5px 10px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .add-btn {
+            margin-top: 20px;
+            padding: 10px;
+            background: #28a745;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <div class=&quot;container&quot;>
+        <h1>Code Translator Tool</h1>
+        <div id=&quot;codeList&quot;></div>
+        <button class=&quot;add-btn&quot; onclick=&quot;addCodeSection()&quot;>Add Code Section</button>
+    </div>
+
+    <script>
+        let codeCount = 0;
+
+        function addCodeSection() {
+            codeCount++;
+            const codeSection = document.createElement('div');
+            codeSection.className = 'code-section';
+            codeSection.innerHTML = `
+                <input type=&quot;text&quot; class=&quot;code-input&quot; placeholder=&quot;Insert code here&quot; id=&quot;codeInput${codeCount}&quot;>
+                <div class=&quot;explanation&quot; id=&quot;explanation${codeCount}&quot;>This is where you explain what the code does.</div>
+                <button class=&quot;delete-btn&quot; onclick=&quot;deleteCodeSection(this)&quot;>X</button>
+            `;
+            document.getElementById('codeList').appendChild(codeSection);
+        }
+
+        function deleteCodeSection(button) {
+            const codeSection = button.parentElement;
+            codeSection.remove();
+        }
+
+        function updateExplanation(index, explanation) {
+            document.getElementById(`explanation${index}`).innerText = explanation;
+        }
+    </script>
+</body>
+</html>"></iframe>
         </div>
     </div>
 
@@ -371,5 +463,5 @@
             ToggleModule.init();
         });
     </script>
-
-</body></html>
+</body>
+</html>
